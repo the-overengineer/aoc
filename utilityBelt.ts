@@ -13,6 +13,10 @@ export function sum(nums: number[]): number {
   return nums.reduce((s, n) => s + n, 0);
 }
 
+export function product(nums: number[]): number {
+  return nums.reduce((s, n) => s * n, 1);
+}
+
 export function zip<T, U>(xs: T[], ys: U[]): [T, U][] {
   const len = Math.min(xs.length, ys.length);
   const acc: [T, U][] = [];
@@ -90,6 +94,31 @@ export function gcd(a: number, b: number): number {
   }
 
   return gcd(b, a % b);
+}
+
+export function gcdAll(nums: number[]): number {
+  if (nums.length === 1) {
+    return nums[0];
+  }
+
+  if (nums.length === 2) {
+    return gcd(nums[0], nums[1]);
+  }
+
+  const [a, b, ...rest] = nums;
+
+  return gcdAll([gcd(a, b), ...rest])
+}
+
+export function leftPad(str: string, len: number, padding: string = '0') {
+  if (str.length >= len) {
+    return str;
+  }
+
+  const missing = len - str.length;
+  const repeatCount = Math.floor(missing / padding.length);
+
+  return padding.repeat(repeatCount) + str;
 }
 
 export class Validate {

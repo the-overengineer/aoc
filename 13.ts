@@ -1,4 +1,5 @@
-import { gcd, max, read } from './utilityBelt';
+import './hackery';
+import { product as productFn, read } from './utilityBelt';
 
 interface Timetable {
   leaveTime: number;
@@ -42,6 +43,42 @@ interface TimetablePosition {
   offset: number;
 }
 
+const modularInverse = (a: number, b: number): number => {
+  const b0 = b;
+  let x0 = 0;
+  let x1 = 1;
+  if (b === 1) {
+    return 1;
+  }
+
+  while (a > 1) {
+    const q = a / b;
+    const rem = a % b;
+    a = b;
+    b = rem;
+    const newX0 = x1 - q * x0
+    x1 = x0
+    x0 = newX0
+  }
+
+  if (x1 < 0) {
+    x1 += b0
+  }
+
+  return x1
+}
+
+const chineseRemainder = (timetables: TimetablePosition[]): number => {
+  let sum = 0;
+  const product = productFn(timetables.map((bus) => bus.id));
+  for (const bus of timetables) {
+    const p = Math.floor(product / bus.id);
+    sum += bus.offset * p * modularInverse(p, bus.id);
+  }
+
+  return sum % product;
+}
+
 async function main2() {
   const timetable: TimetablePosition[] = await read('./13.txt').then((text) => {
     const [,idsRow] = text.split('\n');
@@ -49,25 +86,15 @@ async function main2() {
       .map((id, idx): [string, number] => [id, idx])
       .filter(([id]) => id !== 'x')
       .map(([id, idx]): TimetablePosition => ({
-        id: parseInt(id, 10),
-        offset: idx,
+        id: id.toInt(),
+        offset: (id.toInt() * 10 - idx) % id.toInt(),
       }));
   });
 
-  const largestId = max(timetable.map((bus) => bus.id))!;
-  const largestOffset = timetable.find((bus) => bus.id === largestId)!.offset;
-  console.log(largestId, largestOffset);
+  console.log(timetable);
 
-  for (let timestamp = largestOffset, i = 1 ;; timestamp += largestId, i++) {
-    if (i < 10) {
-      console.log(timestamp);
-    }
-    const matches = timetable.every((bus) => getWaitTime(timestamp, bus.id) === bus.offset);
-    if (matches) {
-      console.log(timestamp);
-      break;
-    }
-  }
+  const result = chineseRemainder(timetable);
+  console.log(result);
 }
 
 main2();
