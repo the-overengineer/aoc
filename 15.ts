@@ -1,33 +1,22 @@
-function getNextNumber(nums: number[], seen: Set<number>): number {
-  const newNum = nums[nums.length - 1];
-  const start = nums.length - 1;
-  const end = 0;
-
-  if (!seen.has(newNum)) {
-    return 0;
-  }
-
-  let i = 1;
-  while (start - i >= end) {
-    if (nums[start - i] === newNum) {
-      return i;
-    }
-
-    i++;
-  }
-
-  throw new Error(`Something went wrong with number ${newNum}`);
+function getNextNumber(newNum: number, index: number, lookup: Map<number, number>): number {
+  const result = lookup.has(newNum) ? index - lookup.get(newNum)! : 0;
+  lookup.set(newNum, index);
+  return result;
 }
 
 function * getNumbers(initial: number[]) {
-  const seen = new Set(initial.slice(0, initial.length - 1));
-  const numbers = [...initial];
+  const lookup = new Map<number, number>();
+
+  initial.slice(0, initial.length - 1).forEach((num, i) => {
+    lookup.set(num, i);
+  });
+
+  let index = initial.length - 1;
+  let newNum = initial[index];
 
   while (true) {
-    const next = getNextNumber(numbers, seen);
-    seen.add(numbers[numbers.length - 1]);
-    numbers.push(next);
-    yield next;
+    newNum = getNextNumber(newNum, index++, lookup);
+    yield newNum;
   }
 }
 
@@ -44,4 +33,17 @@ function main1() {
   }
 }
 
-main1();
+function main2() {
+  const initial = [2,0,1,7,4,14,18];
+  const numberGame = getNumbers(initial);
+  let index = initial.length + 1;
+
+  for (const num of numberGame) {
+    if (index++ === 30_000_000) {
+      console.log(num)
+      break;
+    }
+  }
+}
+
+main2();
