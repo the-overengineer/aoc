@@ -32,6 +32,21 @@ export function flatten<T>(arr: T[][]): T[] {
   return arr.reduce((acc, a) => [...acc, ...a], []);
 }
 
+export function transpose<T>(matrix: T[][]): T[][] {
+  const result: T[][] = [];
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+
+  for (let col = 0; col < cols; col++) {
+    result.push([]);
+    for (let row = 0; row < rows; row++) {
+      result[result.length - 1]!.push(matrix[row][col]);
+    }
+  }
+
+  return result;
+}
+
 export function intersect<T>(...sets: Set<T>[]): Set<T> {
   const result = new Set<T>();
 
@@ -43,6 +58,30 @@ export function intersect<T>(...sets: Set<T>[]): Set<T> {
 
   Array.from(firstSet).forEach((v) => {
     if (sets.every((s) => s.has(v))) {
+      result.add(v);
+    }
+  });
+
+  return result;
+}
+
+export function union<T>(...sets: Set<T>[]): Set<T> {
+  const result = new Set<T>();
+
+  sets.forEach((s) => {
+    Array.from(s).forEach((v) => {
+      result.add(v);
+    });
+  });
+
+  return result;
+}
+
+export function difference<T>(a: Set<T>, b: Set<T>): Set<T> {
+  const result = new Set<T>();
+
+  Array.from(a).forEach((v) => {
+    if (!b.has(v)) {
       result.add(v);
     }
   });
@@ -140,4 +179,31 @@ export class Validate {
   public static oneOf<T>(vals: T[]) {
     return (value: T) => vals.includes(value)
   }
+}
+
+export function constrainUniqueValues<K, V>(map: Map<K, Set<V>>): Map<K, Set<V>> {
+  const result = new Map(map);
+  let changed = true;
+
+  while (changed) {
+    changed = false;
+    const uniqueValues: Set<V> = union(
+      ...Array.from(result.values()).filter((vs) => vs.size === 1),
+    );
+
+    if (uniqueValues.size === 0) {
+      break;
+    }
+
+    for (const key of result.keys()) {
+      const value = result.get(key)!;
+      const valuesWithoutUnique = difference(value, uniqueValues);
+      if (valuesWithoutUnique.size > 0) {
+        changed = true;
+        result.set(key, valuesWithoutUnique);
+      }
+    }
+  }
+
+  return result;
 }
