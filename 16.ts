@@ -1,4 +1,4 @@
-import './hackery';
+import './polyfill';
 import { constrainUniqueValues, flatten, product, readLines, sum, transpose, Validate } from './utilityBelt';
 
 interface IRule {

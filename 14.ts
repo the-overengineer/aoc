@@ -1,4 +1,4 @@
-import './hackery';
+import './polyfill';
 import { flatten, leftPad, readLines, sum } from './utilityBelt';
 
 const MASK_SET = /^mask = ([01X]+)$/;

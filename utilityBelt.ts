@@ -123,6 +123,14 @@ export function replace<T>(arr: T[], index: number, value: T): T[] {
   return [...arr.slice(0, index), value, ...arr.slice(index + 1)];
 }
 
+export function range(from: number, to: number): number[] {
+  const result: number[] = [];
+  for (let i = from; i < to; i++) {
+    result.push(i);
+  }
+  return result;
+}
+
 export function gcd(a: number, b: number): number {
   if (b > a) {
     return gcd(b, a);

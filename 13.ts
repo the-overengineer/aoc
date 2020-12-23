@@ -1,4 +1,4 @@
-import './hackery';
+import './polyfill';
 import { product as productFn, read } from './utilityBelt';
 
 interface Timetable {

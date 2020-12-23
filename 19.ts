@@ -1,5 +1,5 @@
 /* tslint:disable max-classes-per-file */
-import './hackery';
+import './polyfill';
 import { count, readLines } from "./utilityBelt";
 
 type Literal = string;
