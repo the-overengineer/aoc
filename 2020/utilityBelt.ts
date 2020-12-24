@@ -1,8 +1,9 @@
 import { readFile } from 'fs';
+import { join } from 'path';
 import { promisify } from 'util';
 
 export const readBuff = promisify(readFile)
-export const read = (filePath: string): Promise<string> => readBuff(filePath).then(_ => _.toString())
+export const read = (filePath: string): Promise<string> => readBuff(join(__dirname, filePath)).then(_ => _.toString())
 export const readLines = (filePath: string): Promise<string[]> => read(filePath).then((s) => s.split('\n'))
 
 export function count<T>(items: T[], condition: (x: T) => boolean): number {
