@@ -90,6 +90,10 @@ export function difference<T>(a: Set<T>, b: Set<T>): Set<T> {
   return result;
 }
 
+export function setEquals<T>(a: Set<T>, b: Set<T>): boolean {
+  return a.size === b.size && Array.from(a).every((v) => b.has(v));
+}
+
 export function max<T>(items: T[]): T | undefined {
   if (items.length === 0) {
     return;
