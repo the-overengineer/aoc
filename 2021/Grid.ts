@@ -1,0 +1,128 @@
+import { transpose } from './utilityBelt';
+
+type GridCallback<T, R> = (cell: T, row: number, column: number, grid: T[][]) => R;
+type ReduceGridCallback<T, R> = (acc: R, cell: T, row: number, column: number, grid: T[][]) => R;
+
+export class Grid<T> {
+    public constructor(
+        public readonly data: T[][],
+    ) {}
+
+    public get width() {
+        return this.data?.[0]?.length ?? 0;
+    }
+
+    public get height() {
+        return this.data?.length ?? 0;
+    }
+
+    public at(y: number, x: number): T {
+        return this.data[y][x];
+    }
+
+    public transposed(): Grid<T> {
+        return new Grid(transpose(this.data));
+    }
+
+    public slice(fromY: number, fromX: number, height: number, width: number): Grid<T> {
+        const slicedData: T[][] = [];
+        for (let y = fromY; y < fromY + height; y++) {
+            const row: T[] = [];
+
+            for (let x = fromX; x < fromX + width; x++) {
+                row.push(this.data[y][x]);
+            }
+
+            slicedData.push(row);
+        }
+
+        return new Grid(slicedData);
+    }
+
+    public map<R>(fn: GridCallback<T, R>): Grid<R> {
+        return new Grid(
+            this.data.map((row, i) => {
+                return row.map((cell, j) => fn(cell, i, j, this.data));
+            }),
+        );
+    }
+
+    public forEach(fn: GridCallback<T, void>): void {
+        this.data.forEach((row, i) => {
+            row.forEach((cell, j) => {
+                fn(cell, i, j, this.data);
+            });
+        });
+    }
+
+    public filterIndices(fn: GridCallback<T, boolean>): [number, number][] {
+        const indices: [number, number][] = [];
+
+        this.forEach((cell, y, x, data) => {
+            if (fn(cell, y, x, data)) {
+                indices.push([y, x]);
+            }
+        });
+
+        return indices;
+    }
+
+    public filter(fn: GridCallback<T, boolean>): T[] {
+        const matches: T[] = [];
+
+        this.forEach((cell, y, x, data) => {
+            if (fn(cell, y, x, data)) {
+                matches.push(cell);
+            }
+        });
+
+        return matches;
+    }
+
+    public reduce<R>(fn: ReduceGridCallback<T, R>, initial: R): R {
+        let acc = initial;
+        
+        this.forEach((cell, y, x, data) => {
+            acc = fn(acc, cell, y, x, data);
+        });
+
+        return acc;
+    }
+
+    public getNeighbourIndices(y: number, x: number, diagonal: boolean = true): [number, number][] {
+        const offsets = [-1, 0, 1];
+        const indices: [number, number][] = [];
+
+        for (const dy of offsets) {
+            for (const dx of offsets) {
+                if (dy == 0 && dx === 0) {
+                    continue;
+                }
+
+                if (!diagonal && dx !== 0 && dy !== 0) {
+                    continue;
+                }
+
+                const ny = y + dy;
+                const nx = x + dx;
+
+                if (ny < 0 || ny >= this.height) {
+                    continue;
+                }
+
+                if (nx < 0 || nx >= this.width) {
+                    continue;
+                }
+
+                indices.push([ny, nx]);
+            }
+        }
+
+        return indices;
+    }
+
+    public getNeighbours(y: number, x: number, diagonal: boolean = true): T[] {
+        const indices = this.getNeighbourIndices(y, x, diagonal);
+        return indices.map(([ny, nx]) => this.data[ny][nx]);
+    }
+}
