@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "test": "mocha --require module-alias/register",
-    "day": "ts-node ./index.ts"
+    "solve": "ts-node ./runner.ts"
   },
   "dependencies": {
     "@types/mocha": "^8.2.0",
