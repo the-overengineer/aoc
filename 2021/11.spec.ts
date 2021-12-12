@@ -1,15 +1,18 @@
 import { deepStrictEqual as eq } from 'assert';
 
 import { octopusGlowStep } from './11';
+import { Grid } from './Grid';
 
-function parseGrid(grid: string): number[][] {
-    return grid.split('\n').map((line) => {
-        return line.trim().split('').map((c) => parseInt(c, 10));
-    });
+function parseGrid(grid: string): Grid<number> {
+    return new Grid(
+        grid.split('\n').map((line) => {
+            return line.trim().split('').map((c) => parseInt(c, 10));
+        }),
+    );
 }
 
-function stringifyGrid(grid: number[][]): string {
-    return grid.map((r) => r.join('')).join('\n');
+function stringifyGrid(grid: Grid<number>): string {
+    return grid.data.map((r) => r.join('')).join('\n');
 }
 
 function expectNextStep(curr: string, next: string): void {
@@ -28,7 +31,7 @@ function expectFlashes(curr: string, expected: number): void {
     eq(flashes, expected);
 }
 
-describe.only('day 11, 2021', () => {
+describe('day 11, 2021', () => {
     describe('octopusGlowStep', () => {
         describe('small examples', () => {
             const grid1 = `11111

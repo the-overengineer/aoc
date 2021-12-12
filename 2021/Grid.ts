@@ -16,8 +16,16 @@ export class Grid<T> {
         return this.data?.length ?? 0;
     }
 
-    public at(y: number, x: number): T {
+    public get(y: number, x: number): T {
         return this.data[y][x];
+    }
+
+    public set(y: number, x: number, value: T): void {
+        this.data[y][x] = value;
+    }
+
+    public mutateAt(y: number, x: number, fn: (value: T, y: number, x: number) => T): void {
+        this.set(y, x, fn(this.get(y, x), y, x));
     }
 
     public transposed(): Grid<T> {
@@ -81,7 +89,7 @@ export class Grid<T> {
 
     public reduce<R>(fn: ReduceGridCallback<T, R>, initial: R): R {
         let acc = initial;
-        
+
         this.forEach((cell, y, x, data) => {
             acc = fn(acc, cell, y, x, data);
         });
@@ -124,5 +132,9 @@ export class Grid<T> {
     public getNeighbours(y: number, x: number, diagonal: boolean = true): T[] {
         const indices = this.getNeighbourIndices(y, x, diagonal);
         return indices.map(([ny, nx]) => this.data[ny][nx]);
+    }
+
+    public toString(): string {
+        return this.data.map((row) => row.map((c) => String(c)).join(' ')).join('\n');
     }
 }
