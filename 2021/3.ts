@@ -1,7 +1,7 @@
+import { Solution } from '@core/DaySolution';
 import {
   BinaryString,
   binaryStringToNumber,
-  readLines,
 } from '@core/utilityBelt';
 
 function getMostCommonBit(bitStrings: BinaryString[], atIndex: number, prefer: '0' | '1' = '1'): '0' | '1' {
@@ -73,8 +73,8 @@ function filterMatchingLeastCommonBit(bitStrings: BinaryString[], atIndex: numbe
   return bitStrings.filter((bs) => bs[atIndex] === leastCommon);
 }
 
-async function part1() {
-  const binaryStrings: BinaryString[] = await readLines('./3.txt');
+function part1(lines: string[]) {
+  const binaryStrings: BinaryString[] = lines as BinaryString[];
   let mostCommonBitstring: string = '';
   let leastCommonBitstring: string = '';
   const bsLen = binaryStrings[0].length;
@@ -98,11 +98,8 @@ async function part1() {
   return gammaRate * epsiolonRate;
 }
 
-// 4139586
-// part1().then(console.log);
-
-async function part2() {
-  const binaryStrings: BinaryString[] = await readLines('./3.txt');
+function part2(lines: string[]) {
+  const binaryStrings: BinaryString[] = lines as BinaryString[];
   const oxygenGeneratorRatingStr = findByCriterion(
     binaryStrings,
     filterMatchingMostCommonBit,
@@ -119,4 +116,7 @@ async function part2() {
   return binaryStringToNumber(oxygenGeneratorRatingStr) * binaryStringToNumber(co2ScrubberRatingStr);
 }
 
-part2().then(console.log);
+export default Solution.lines({
+  part1,
+  part2,
+})

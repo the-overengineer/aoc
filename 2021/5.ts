@@ -1,4 +1,4 @@
-import { readLines } from '@core/utilityBelt';
+import { Solution } from '@core/DaySolution';
 
 type X = number;
 type Y = number;
@@ -76,20 +76,21 @@ function countOverlaps(lines: Line[]): number {
     return overlapCount;
 }
 
-async function getLinesFromFile(path: string): Promise<Line[]> {
-    const textLines = await readLines(path);
+function parseLines(textLines: string[]): Line[] {
     return textLines.map((line) => Line.of(line));
 }
 
-async function part1() {
-    const lines = await getLinesFromFile('./5.txt');
+function part1(textLines: string[]) {
+    const lines = parseLines(textLines);
     return countOverlaps(lines.filter((l) => l.isStraight));   
 }
 
-async function part2() {
-    const lines = await getLinesFromFile('./5.txt');
+function part2(textLines: string[]) {
+    const lines = parseLines(textLines);
     return countOverlaps(lines);   
 }
 
-part1().then(console.log);
-part2().then(console.log);
+export default Solution.lines({
+    part1,
+    part2,
+})

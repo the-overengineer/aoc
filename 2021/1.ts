@@ -1,7 +1,7 @@
-import { readLines } from '@core/utilityBelt';
+import { Solution } from '@core/DaySolution';
 
-async function part1() {
-  const numbers = await readLines('./1.txt').then((xs) => xs.map((i) => parseInt(i, 10)));
+function part1(lines: string[]) {
+  const numbers = lines.map((i) => parseInt(i, 10));
   return numbers.reduce((cnt, n, i, ns) => i > 0 && n > ns[i - 1] ? cnt + 1 : cnt, 0);
 }
 
@@ -20,10 +20,13 @@ function collectSummedSlidingWindow(xs: number[], size: number): number[] {
   return sums;
 }
 
-async function part2() {
-  const numbers = await readLines('./1.txt').then((xs) => xs.map((i) => parseInt(i, 10)));
+function part2(lines: string[]) {
+  const numbers = lines.map((i) => parseInt(i, 10));
   const windows = collectSummedSlidingWindow(numbers, 3);
   return windows.reduce((cnt, n, i, ns) => i > 0 && n > ns[i - 1] ? cnt + 1 : cnt, 0);
 }
 
-part2().then(console.log);
+export default Solution.lines({
+  part1,
+  part2,
+});

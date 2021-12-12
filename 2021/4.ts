@@ -1,4 +1,4 @@
-import { read } from '@core/utilityBelt';
+import { Solution } from "@core/DaySolution";
 
 export function sum(nums: number[]): number {
     return nums.reduce((s, n) => s + n, 0);
@@ -74,8 +74,8 @@ interface TaskInput {
     boards: BingoBoard[];
 }
 
-async function parseInput(path: string): Promise<TaskInput> {
-    const [drawnRow, ...boardDescriptors] = await read(path).then((text) => text.split('\n\n'));
+function parseInput(text: string): TaskInput {
+    const [drawnRow, ...boardDescriptors] = text.split('\n\n');
     const drawn = drawnRow.split(',').map((it) => parseInt(it, 10));
     const boards = boardDescriptors.map((desc) => BingoBoard.of(desc));
     return {
@@ -84,8 +84,8 @@ async function parseInput(path: string): Promise<TaskInput> {
     };
 }
 
-async function task1(): Promise<number | undefined> {
-    const input = await parseInput('./4.txt');
+function task1(text: string): number | undefined {
+    const input = parseInput(text);
     const drawnNumbers = new Set<number>();
 
     for (const draw of input.drawn) {
@@ -99,8 +99,8 @@ async function task1(): Promise<number | undefined> {
     }
 }
 
-async function task2(): Promise<number | undefined> {
-    const input = await parseInput('./4.txt');
+function task2(text: string): number | undefined {
+    const input = parseInput(text);
     const drawnNumbers = new Set<number>();
     const boards = new Set(input.boards);
 
@@ -122,5 +122,7 @@ async function task2(): Promise<number | undefined> {
     }
 }
 
-// task1().then(console.log);
-task2().then(console.log);
+export default Solution.raw({
+    part1: task1,
+    part2: task2,
+});

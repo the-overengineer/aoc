@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --require module-alias/register",
     "day": "ts-node ./index.ts"
   },
   "dependencies": {

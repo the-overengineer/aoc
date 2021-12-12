@@ -1,4 +1,4 @@
-import { readLines } from '@core/utilityBelt';
+import { Solution } from '@core/DaySolution';
 
 const closedBy: Record<string, string> = {
     '(': ')',
@@ -70,8 +70,7 @@ function getAutocompleteScore(syms: string[]): number {
     return autocompleteScore;
 }
 
-async function part1() {
-    const lines = await readLines('./10.input');
+function part1(lines: string[]) {
     let score = 0;
 
     for (const line of lines) {
@@ -86,8 +85,7 @@ async function part1() {
     return score;
 }
 
-async function part2() {
-    const lines = await readLines('./10.input');
+function part2(lines: string[]) {
     const inputs = lines.map((l) => l.split(''));
     const validInputs = inputs.filter((i) => getIncompletenessScore(i) == null);
     const scores: number[] = [];
@@ -102,4 +100,7 @@ async function part2() {
     return sortedScores[middleIndex];
 }
 
-part2().then(console.log);
+export default Solution.lines({
+    part1,
+    part2,
+});

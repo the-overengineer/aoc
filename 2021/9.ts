@@ -1,11 +1,9 @@
 import { ArraySet } from '@core/ArraySet';
-import {
-    product,
-    readLines,
-} from '@core/utilityBelt';
+import { product } from '@core/utilityBelt';
+import { Solution } from '@core/DaySolution';
 
-async function readMap(path: string): Promise<number[][]> {
-    return readLines(path).then((lines) => lines.map((line) => line.split('').map((c) => parseInt(c, 10))));
+function readMap(lines: string[]): number[][] {
+    return lines.map((line) => line.split('').map((c) => parseInt(c, 10)));
 }
 
 function findNeighbours<T>(map: T[][], i: number, j: number): T[] {
@@ -27,8 +25,8 @@ function isLowPoint(map: number[][], i: number, j: number): boolean {
     return neighbours.every((n) => n > value);
 }
 
-async function part1() {
-    const map = await readMap('./9.input');
+function part1(lines: string[]) {
+    const map = readMap(lines);
     let riskLevel = 0;
 
     for (let i = 0; i < map.length; i++) {
@@ -73,8 +71,8 @@ function flood(map: number[][], i: number, j: number, basin: Basin = new ArraySe
     return basin;
 }
 
-async function part2() {
-    const map = await readMap('./9.input');
+function part2(lines: string[]) {
+    const map = readMap(lines);
     const basins: Array<Basin> = [];
     
     for (let i = 0; i < map.length; i++) {
@@ -100,4 +98,8 @@ async function part2() {
     return product(biggestThreeBasinSizes);
 }
 
-part2().then(console.log);
+export default Solution.lines({
+    part1,
+    part2,
+});
+

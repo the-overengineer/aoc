@@ -3,10 +3,10 @@ import {
     flatten,
     intersect,
     union,
-    readLines,
     setEquals,
     difference,
 } from '@core/utilityBelt';
+import { Solution } from '@core/DaySolution';
 
 type Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
 enum Segment {
@@ -129,22 +129,20 @@ function findMapping(uniqueSegments: string[]): Record<Segment, Segment> {
     return validMappings[0];
 }
 
-async function part1() {
+function part1(lines: string[]) {
     const uniqueSizes = new Set([
         correctDisplay['1'].size,
         correctDisplay['4'].size,
         correctDisplay['7'].size,
         correctDisplay['8'].size,
     ]);
-    const lines = await readLines('./8.input');
     const outputRows = lines.map((line) => line.split(' | ')[1].split(' '));
     const outputs = flatten(outputRows);
     const uniquesCount = count(outputs, (o) => uniqueSizes.has(o.length));
     return uniquesCount;
 }
 
-async function part2() {
-    const lines = await readLines('./8.input');
+function part2(lines: string[]) {
     let digitSum = 0;
     for (const line of lines) {
         const [uniquePart, digitPart] = line.split(' | ');
@@ -171,5 +169,7 @@ async function part2() {
     return digitSum;
 }
 
-// part1().then(console.log);
-part2().then(console.log);
+export default Solution.lines({
+    part1,
+    part2,
+});

@@ -1,11 +1,8 @@
-import {
-    read,
-    sum,
-} from '@core/utilityBelt';
+import { Solution } from '@core/DaySolution';
+import { sum } from '@core/utilityBelt';
 
-async function getCrabPositions(path: string): Promise<number[]> {
-    return read(path)
-        .then((line) => line.split(',').map((it) => parseInt(it, 10)));
+function getCrabPositions(line: string): number[] {
+    return line.split(',').map((it) => parseInt(it, 10));
 }
 
 function mean(xs: number[]): number {
@@ -29,8 +26,8 @@ function scaledCost(distance: number): number {
     return sum;
 }
 
-async function part1() {
-    const crabs = await getCrabPositions('./7.input');
+function part1(text: string) {
+    const crabs = getCrabPositions(text);
     const crabMedian = median(crabs);
     const diffs = crabs.map((c) => Math.abs(crabMedian - c));
     return sum(diffs);
@@ -67,11 +64,13 @@ function greedySmallestCost(crabs: number[]): [number, number] {
 
 // Mean is off by one, though I thought it would work :thinking_face:
 // Probably need to check both floor and ceil, or something.
-async function part2() {
-    const crabs = await getCrabPositions('./7.input');
-    return greedySmallestCost(crabs);
+function part2(text: string) {
+    const crabs = getCrabPositions(text);
+    return greedySmallestCost(crabs)[1];
 
 }
 
-// part1().then(console.log);
-part2().then(console.log);
+export default Solution.raw({
+    part1,
+    part2,
+})

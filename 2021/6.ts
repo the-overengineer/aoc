@@ -1,7 +1,5 @@
-import {
-    read,
-    sum,
- } from '@core/utilityBelt';
+import { Solution } from '@core/DaySolution';
+import { sum } from '@core/utilityBelt';
 
 export type FishAge = 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0;
 export type FishCounter = Record<FishAge, number>;
@@ -17,8 +15,8 @@ export const emptyFishCounter: FishCounter = {
     0: 0,
 };
 
-async function getFish(path: string): Promise<number[]> {
-    return read(path).then((row) => row.split(',').map((f) => parseInt(f, 10)));
+function getFish(row: string): number[] {
+    return row.split(',').map((f) => parseInt(f, 10));
 }
 
 function getFishCounter(fish: number[]): FishCounter {
@@ -79,5 +77,8 @@ async function part2() {
     return countFish(counter);
 }
 
-// part1().then(console.log);
-part2().then(console.log);
+export default Solution.raw({
+    part1,
+    part2,
+});
+

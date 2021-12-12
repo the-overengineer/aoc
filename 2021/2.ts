@@ -1,5 +1,4 @@
-import { readLines } from '@core/utilityBelt';
-
+import { Solution } from '@core/DaySolution';
 
 interface Position {
   distance: number;
@@ -25,13 +24,12 @@ function parseMove(line: string): Move {
   };
 }
 
-async function getMoves() {
-  const lines = await readLines('./2.txt');
+function getMoves(lines: string[]) {
   return lines.map((line) => parseMove(line));
 }
 
-async function part1() {
-  const moves = await getMoves();
+function part1(lines: string[]) {
+  const moves = getMoves(lines);
   const position: Position = {
     distance: 0,
     depth: 0,
@@ -54,8 +52,8 @@ async function part1() {
   return position.depth * position.distance;
 }
 
-async function part2() {
-  const moves = await getMoves();
+function part2(lines: string[]) {
+  const moves = getMoves(lines);
   const position: AimPosition = {
     distance: 0,
     depth: 0,
@@ -80,4 +78,7 @@ async function part2() {
   return position.depth * position.distance;
 }
 
-part2().then(console.log);
+export default Solution.lines({
+  part1,
+  part2,
+});

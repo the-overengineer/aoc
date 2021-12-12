@@ -1,11 +1,10 @@
 import { ArraySet } from '@core/ArraySet';
 import { Grid } from '@core/Grid';
-import { readLines } from '@core/utilityBelt';
+import { Solution } from '@core/DaySolution';
 
 const MAX_GLOW = 9;
 
-async function readGrid(path: string): Promise<Grid<number>> {
-    const lines = await readLines(path);
+function readGrid(lines: string[]): Grid<number> {
     return new Grid(lines.map((line) => line.split('').map((it) => parseInt(it, 10))));
 }
 
@@ -61,8 +60,8 @@ export function octopusGlowStep(grid: Grid<number>): [Grid<number>, number] {
     return [nextGrid, flashes];
 }
 
-async function part1() {
-    let grid = await readGrid('./11.input');
+function part1(lines: string[]) {
+    let grid = readGrid(lines);
     let glowCounter = 0;
 
     for (let i = 1; i <= 100; i++) {
@@ -74,8 +73,8 @@ async function part1() {
     return glowCounter;
 }
 
-async function part2() {
-    let grid = await readGrid('./11.input');
+function part2(lines: string[]) {
+    let grid = readGrid(lines);
     const allFlashCount = grid.width * grid.height;
 
     for (let i = 1 ;; i++) {
@@ -87,5 +86,7 @@ async function part2() {
     }
 }
 
-part1().then(console.log); // 1686
-part2().then(console.log); // 360
+export default Solution.lines({
+    part1,
+    part2,
+});
