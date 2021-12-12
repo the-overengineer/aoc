@@ -1,7 +1,7 @@
 import {
     read,
     sum,
- } from './utilityBelt';
+ } from '@core/utilityBelt';
 
 export type FishAge = 8 | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0;
 export type FishCounter = Record<FishAge, number>;

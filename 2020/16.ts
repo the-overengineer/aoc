@@ -1,5 +1,5 @@
-import './polyfill';
-import { constrainUniqueValues, flatten, product, readLines, sum, transpose, Validate } from './utilityBelt';
+import '@core/polyfill';
+import { constrainUniqueValues, flatten, product, readLines, sum, transpose, Validate } from '@core/utilityBelt';
 
 interface IRule {
   name: string;

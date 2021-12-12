@@ -1,5 +1,5 @@
-import './polyfill';
-import { flatten, leftPad, readLines, sum } from './utilityBelt';
+import '@core/polyfill';
+import { flatten, leftPad, readLines, sum } from '@core/utilityBelt';
 
 const MASK_SET = /^mask = ([01X]+)$/;
 const ASSIGN = /^mem\[(\d+)\] = (\d+)$/

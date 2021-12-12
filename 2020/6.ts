@@ -1,4 +1,4 @@
-import { intersect, read, sum } from './utilityBelt';
+import { intersect, read, sum } from '@core/utilityBelt';
 
 async function main1() {
   const text = await read('./6.txt');

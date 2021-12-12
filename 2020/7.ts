@@ -1,4 +1,4 @@
-import { count, read, sum } from './utilityBelt';
+import { count, read, sum } from '@core/utilityBelt';
 
 interface ContainsRule {
   colour: string;

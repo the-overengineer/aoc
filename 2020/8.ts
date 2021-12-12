@@ -1,4 +1,4 @@
-import { read, replace } from './utilityBelt';
+import { read, replace } from '@core/utilityBelt';
 
 type Program = [string, number][];
 

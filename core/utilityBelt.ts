@@ -1,9 +1,8 @@
 import { readFile } from 'fs';
-import { join } from 'path';
 import { promisify } from 'util';
 
 export const readBuff = promisify(readFile)
-export const read = (filePath: string): Promise<string> => readBuff(join(__dirname, filePath)).then(_ => _.toString())
+export const read = (filePath: string): Promise<string> => readBuff(filePath).then(_ => _.toString())
 export const readLines = (filePath: string): Promise<string[]> => read(filePath).then((s) => s.split('\n'))
 
 export function count<T>(items: T[], condition: (x: T) => boolean): number {
@@ -90,6 +89,10 @@ export function difference<T>(a: Set<T>, b: Set<T>): Set<T> {
   return result;
 }
 
+export function setEquals<T>(a: Set<T>, b: Set<T>): boolean {
+  return a.size === b.size && Array.from(a).every((v) => b.has(v));
+}
+
 export function max<T>(items: T[]): T | undefined {
   if (items.length === 0) {
     return;
@@ -167,6 +170,23 @@ export function leftPad(str: string, len: number, padding: string = '0') {
   const repeatCount = Math.floor(missing / padding.length);
 
   return padding.repeat(repeatCount) + str;
+}
+
+export type BinaryString = string;
+
+export function binaryStringToNumber(bs: BinaryString) {
+  let factor = 1;
+  let num = 0;
+  
+  for (let i = bs.length - 1; i >= 0; i--) {
+    if (bs[i] === '1') {
+      num += factor;
+    }
+
+    factor *= 2;
+  }
+
+  return num;
 }
 
 export class Validate {

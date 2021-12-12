@@ -2,7 +2,7 @@ import {
   BinaryString,
   binaryStringToNumber,
   readLines,
-} from './utilityBelt';
+} from '@core/utilityBelt';
 
 function getMostCommonBit(bitStrings: BinaryString[], atIndex: number, prefer: '0' | '1' = '1'): '0' | '1' {
   const rowCount = bitStrings.length;

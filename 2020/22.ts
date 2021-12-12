@@ -1,5 +1,5 @@
-import './polyfill';
-import { read, sum } from "./utilityBelt";
+import '@core/polyfill';
+import { read } from '@core/utilityBelt';
 
 async function getCards(): Promise<[number[], number[]]> {
   const text = await read('./22.txt');

@@ -1,4 +1,4 @@
-import { transpose } from './utilityBelt';
+import { transpose } from '@core/utilityBelt';
 
 type GridCallback<T, R> = (cell: T, row: number, column: number, grid: T[][]) => R;
 type ReduceGridCallback<T, R> = (acc: R, cell: T, row: number, column: number, grid: T[][]) => R;

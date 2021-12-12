@@ -1,7 +1,4 @@
-import {
-    flatten,
-    readLines,
-} from './utilityBelt';
+import { Solution } from '@core/DaySolution';
 
 enum NodeType {
     Start,
@@ -44,8 +41,7 @@ function updateWithNode(graph: Graph, nodeName: NodeName, connectsTo: NodeName):
     graph.get(nodeName)!.connectsTo.add(connectsTo);
 }
 
-async function readGraph(path: string): Promise<Graph> {
-    const lines = await readLines(path);
+function readGraph(lines: string[]): Graph {
     const graph = new Map<NodeName, Node>();
 
     for (const line of lines) {
@@ -114,16 +110,19 @@ function findValidPathsPermissive(
     return discoveredPaths;
 }
 
-async function part1() {
-    const graph = await readGraph('./12.input');
+async function part1(lines: string[]) {
+    const graph = readGraph(lines);
     const paths = findValidPaths(graph);
     return paths.length;
 }
 
-async function part2() {
-    const graph = await readGraph('./12.input');
+async function part2(lines: string[]) {
+    const graph = readGraph(lines);
     const paths = findValidPathsPermissive(graph);
     return paths.length;
 }
 
-part2().then(console.log);
+export default Solution.lines({
+    part1,
+    part2,
+});

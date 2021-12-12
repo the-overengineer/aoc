@@ -1,4 +1,4 @@
-import { ArraySet } from "./ArraySet";
+import { ArraySet } from '@core/ArraySet';
 
 type Coordinate = [number, number, number, number];
 

@@ -1,6 +1,6 @@
-import { ArraySet } from './ArraySet';
-import { Grid } from './Grid';
-import { readLines } from './utilityBelt';
+import { ArraySet } from '@core/ArraySet';
+import { Grid } from '@core/Grid';
+import { readLines } from '@core/utilityBelt';
 
 const MAX_GLOW = 9;
 

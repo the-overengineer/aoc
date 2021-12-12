@@ -1,4 +1,4 @@
-import { readLines } from './utilityBelt';
+import { readLines } from '@core/utilityBelt';
 
 type X = number;
 type Y = number;

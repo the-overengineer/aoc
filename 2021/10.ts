@@ -1,4 +1,4 @@
-import { readLines } from './utilityBelt';
+import { readLines } from '@core/utilityBelt';
 
 const closedBy: Record<string, string> = {
     '(': ')',

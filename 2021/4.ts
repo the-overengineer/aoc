@@ -1,4 +1,4 @@
-import { read } from './utilityBelt';
+import { read } from '@core/utilityBelt';
 
 export function sum(nums: number[]): number {
     return nums.reduce((s, n) => s + n, 0);

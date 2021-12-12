@@ -1,7 +1,7 @@
 import {
     read,
     sum,
-} from './utilityBelt';
+} from '@core/utilityBelt';
 
 async function getCrabPositions(path: string): Promise<number[]> {
     return read(path)

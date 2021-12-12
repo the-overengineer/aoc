@@ -1,4 +1,4 @@
-import { read as readFile} from './utilityBelt';
+import { read as readFile} from '@core/utilityBelt';
 
 function countLetter(text: string, letter: string): number {
   return text.split('').reduce((sum, c) => c === letter ? sum + 1 : sum, 0)

@@ -1,5 +1,5 @@
-import './polyfill';
-import { range } from "./utilityBelt";
+import '@core/polyfill';
+import { range } from '@core/utilityBelt';
 
 const input = '784235916'.split('').map(_ => _.toInt());
 

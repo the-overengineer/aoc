@@ -1,4 +1,4 @@
-import { count, flatten, read } from './utilityBelt';
+import { count, flatten, read } from '@core/utilityBelt';
 
 export class Grid {
   public static parse(text: string) {

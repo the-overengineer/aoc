@@ -1,6 +1,6 @@
 /* tslint:disable max-classes-per-file */
-import './polyfill';
-import { count, product, read } from "./utilityBelt";
+import '@core/polyfill';
+import { count, product, read } from '@core/utilityBelt';
 
 class RasterImage {
   public constructor(

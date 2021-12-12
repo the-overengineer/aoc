@@ -1,4 +1,4 @@
-import { constrainUniqueValues, difference, intersect, readLines, sum, union } from './utilityBelt';
+import { constrainUniqueValues, difference, intersect, readLines, sum, union } from '@core/utilityBelt';
 
 type Food = string;
 type Allergen = string;

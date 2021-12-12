@@ -1,5 +1,4 @@
-import { WatchFileKind } from "typescript";
-import { read, max, min, sum } from './utilityBelt';
+import { read, max, min, sum } from '@core/utilityBelt';
 
 function isValid(n: number, prev: number[]): boolean {
   for (let i = 0; i < prev.length; i++) {

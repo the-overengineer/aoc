@@ -1,5 +1,5 @@
-import { ArraySet } from "./ArraySet";
-import { count, flatten, readLines } from "./utilityBelt";
+import { ArraySet } from '@core/ArraySet';
+import { count, flatten, readLines } from '@core/utilityBelt';
 
 
 type ITile = [number, number];

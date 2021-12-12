@@ -1,6 +1,6 @@
 /* tslint:disable max-classes-per-file */
-import './polyfill';
-import { count, readLines } from "./utilityBelt";
+import '@core/polyfill';
+import { count, readLines } from '@core/utilityBelt';
 
 type Literal = string;
 type RuleRef = number;

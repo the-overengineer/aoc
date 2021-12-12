@@ -1,4 +1,4 @@
-import { read, max } from './utilityBelt';
+import { read, max } from '@core/utilityBelt';
 
 type Pair = [number, number]
 

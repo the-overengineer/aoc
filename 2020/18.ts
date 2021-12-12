@@ -1,6 +1,6 @@
 /* tslint:disable max-classes-per-file array-type */
 import { assert } from 'console';
-import { readLines, sum } from "./utilityBelt";
+import { readLines, sum } from '@core/utilityBelt';
 
 abstract class Expr {
   abstract result(): number;

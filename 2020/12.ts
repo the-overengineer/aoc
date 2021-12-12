@@ -1,4 +1,4 @@
-import { read } from './utilityBelt';
+import { read } from '@core/utilityBelt';
 
 type Direction = 'N' | 'E' | 'S' | 'W';
 type Coordinates = [number, number];

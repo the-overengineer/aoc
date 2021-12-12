@@ -1,5 +1,5 @@
-import './polyfill';
-import { product as productFn, read } from './utilityBelt';
+import '@core/polyfill';
+import { product as productFn, read } from '@core/utilityBelt';
 
 interface Timetable {
   leaveTime: number;

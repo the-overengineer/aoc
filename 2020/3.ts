@@ -1,4 +1,4 @@
-import { read } from './utilityBelt';
+import { read } from '@core/utilityBelt';
 
 enum Cell {
   Tree,

@@ -1,4 +1,4 @@
-import { read, count, Validate } from './utilityBelt';
+import { read, count, Validate } from '@core/utilityBelt';
 
 function parsePassports(text: string) {
   return text.split('\n\n').map((chunk) => {

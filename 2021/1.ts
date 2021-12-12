@@ -1,4 +1,4 @@
-import { readLines } from './utilityBelt';
+import { readLines } from '@core/utilityBelt';
 
 async function part1() {
   const numbers = await readLines('./1.txt').then((xs) => xs.map((i) => parseInt(i, 10)));

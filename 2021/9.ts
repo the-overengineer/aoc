@@ -1,8 +1,8 @@
-import { ArraySet } from './ArraySet';
+import { ArraySet } from '@core/ArraySet';
 import {
     product,
     readLines,
-} from './utilityBelt';
+} from '@core/utilityBelt';
 
 async function readMap(path: string): Promise<number[][]> {
     return readLines(path).then((lines) => lines.map((line) => line.split('').map((c) => parseInt(c, 10))));

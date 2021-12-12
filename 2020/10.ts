@@ -1,4 +1,4 @@
-import { count, max, readLines, zip } from './utilityBelt';
+import { count, max, readLines, zip } from '@core/utilityBelt';
 
 async function readInput(): Promise<number[]> {
   const lines = await readLines('./10.txt');

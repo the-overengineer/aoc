@@ -1,7 +1,7 @@
 import { deepStrictEqual as eq } from 'assert';
 
 import { octopusGlowStep } from './11';
-import { Grid } from './Grid';
+import { Grid } from '@core/Grid';
 
 function parseGrid(grid: string): Grid<number> {
     return new Grid(
