@@ -189,6 +189,22 @@ export function binaryStringToNumber(bs: BinaryString) {
   return num;
 }
 
+export function slidingWindow<T>(items: T[], size: number): T[][] {
+  const collections: T[][] = [];
+
+  for (let i = 0; i <= items.length - size; i++) {
+    const window: T[] = [];
+
+    for (let j = 0; j < size; j++) {
+      window.push(items[i + j]);
+    }
+
+    collections.push(window);
+  }
+
+  return collections;
+}
+
 export class Validate {
   public static exactLength(l: number) {
     return (value: string | any[]): boolean => value.length === l;
