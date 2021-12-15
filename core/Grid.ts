@@ -134,6 +134,66 @@ export class Grid<T> {
         return indices.map(([ny, nx]) => this.data[ny][nx]);
     }
 
+    public appendRight(other: Grid<T>): Grid<T> {
+        if (this.height !== other.height) {
+            throw new Error('Cannot append grid of differing height!');
+        }
+
+        const data: T[][] = [];
+
+        for (let i = 0; i < this.height; i++) {
+            const row: T[] = [];
+
+            for (let j = 0; j < this.width; j++) {
+                row.push(this.get(i, j));
+            }
+
+            for (let j = 0; j < other.width; j++) {
+                row.push(other.get(i, j));
+            }
+
+            data.push(row);
+        }
+
+        return new Grid(data);
+    }
+
+    public appendLeft(other: Grid<T>): Grid<T> {
+        return other.appendRight(this);
+    }
+
+    public appendBottom(other: Grid<T>): Grid<T> {
+        if (this.width !== other.width) {
+            throw new Error('Cannot append grid of differing width!');
+        }
+
+        const data: T[][] = [];
+
+        for (let i = 0; i < this.height; i++) {
+            data.push([...this.data[i]]);
+        }
+
+        for (let i = 0; i < other.height; i++) {
+            data.push([...other.data[i]]);
+        }
+
+        return new Grid(data);
+    }
+
+    public appendTop(other: Grid<T>): Grid<T> {
+        return other.appendBottom(this);
+    }
+
+    public clone(): Grid<T> {
+        const data: T[][] = [];
+
+        for (let y = 0; y < this.height; y++) {
+            data.push([...this.data[y]]);
+        }
+
+        return new Grid(data);
+    }
+
     public toString(): string {
         return this.data.map((row) => row.map((c) => String(c)).join(' ')).join('\n');
     }

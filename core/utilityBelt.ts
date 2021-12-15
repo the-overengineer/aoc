@@ -5,6 +5,38 @@ export const readBuff = promisify(readFile)
 export const read = (filePath: string): Promise<string> => readBuff(filePath).then(_ => _.toString())
 export const readLines = (filePath: string): Promise<string[]> => read(filePath).then((s) => s.split('\n'))
 
+export function argmin<T, R>(xs: T[], fn: (x: T) => R): T {
+  let best = xs[0];
+  let bestScore = fn(xs[0]);
+
+  for (let i = 1; i < xs.length; i++) {
+    const score = fn(xs[i]);
+
+    if (score < bestScore) {
+      bestScore = score;
+      best = xs[i];
+    }
+  }
+
+  return best;
+}
+
+export function argmax<T, R>(xs: T[], fn: (x: T) => R): T {
+  let best = xs[0];
+  let bestScore = fn(xs[0]);
+
+  for (let i = 1; i < xs.length; i++) {
+    const score = fn(xs[i]);
+
+    if (score > bestScore) {
+      bestScore = score;
+      best = xs[i];
+    }
+  }
+
+  return best;
+}
+
 export function count<T>(items: T[], condition: (x: T) => boolean): number {
   return items.reduce((cnt, item) => condition(item) ? cnt + 1 : cnt, 0);
 }
@@ -91,6 +123,24 @@ export function difference<T>(a: Set<T>, b: Set<T>): Set<T> {
 
 export function setEquals<T>(a: Set<T>, b: Set<T>): boolean {
   return a.size === b.size && Array.from(a).every((v) => b.has(v));
+}
+
+export function isEqual<T>(a: T, b: T): boolean {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.length === b.length && a.every((x, i) => isEqual(x, b[i]));
+  } else if (typeof a === 'object' && typeof b === 'object') {
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+
+    return isEqual(aKeys, bKeys)
+      && aKeys.every((k: any) => {
+        const aVal = (a as any)[k];
+        const bVal = (b as any)[k];
+        return isEqual(aVal, bVal);
+      });
+  } else {
+    return a === b;
+  }
 }
 
 export function max<T>(items: T[]): T | undefined {
