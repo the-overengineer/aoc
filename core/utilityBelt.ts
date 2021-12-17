@@ -5,6 +5,10 @@ export const readBuff = promisify(readFile)
 export const read = (filePath: string): Promise<string> => readBuff(filePath).then(_ => _.toString())
 export const readLines = (filePath: string): Promise<string[]> => read(filePath).then((s) => s.split('\n'))
 
+export function gaussSum(n: number) {
+  return (n + 1) * n / 2;
+}
+
 export function argmin<T, R>(xs: T[], fn: (x: T) => R): T {
   let best = xs[0];
   let bestScore = fn(xs[0]);
