@@ -72,13 +72,15 @@ function part2(input: string) {
     const visited = new ArraySet<[number, number]>();
     const candidates: [number, number][] = [[0, 0]];
     let hitCount = 0;
+    const maxX = Math.max(Math.abs(area.x[0]), Math.abs(area.x[1]));
+    const maxY = Math.max(Math.abs(area.y[0]), Math.abs(area.y[1]));
 
     const add = (c: [number, number]) => {
         if (visited.has(c)) {
             return;
         }
 
-        if (c.some((e) => Math.abs(e) > 500)) {
+        if (c[0] > maxX || c[1] > maxY) {
             return;
         }
 
