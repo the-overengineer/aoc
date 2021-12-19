@@ -7,7 +7,7 @@ import {
     SnailFishNum,
 } from './18';
 
-describe.only('day 18', () => {
+describe('day 18', () => {
     describe('reduceExplode', () => {
         it('should match example one', () => {
             const input: SnailFishNum = [[[[[9,8],1],2],3],4];
