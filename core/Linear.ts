@@ -14,19 +14,19 @@ export class Vector<T extends number[]> {
     }
 
     public add(other: Vector<T>): Vector<T> {
-        return new Vector(
+        return this.construct(
             this.data.map((x, i) => x + other.at(i)) as T,
         );
     }
 
     public subtract(other: Vector<T>): Vector<T> {
-        return new Vector(
+        return this.construct(
             this.data.map((x, i) => x - other.at(i)) as T,
         );
     }
 
     public dotProduct(other: Vector<T>): Vector<T> {
-        return new Vector(
+        return this.construct(
             this.data.map((x, i) => x * other.at(i)) as T,
         );
     }
@@ -38,9 +38,21 @@ export class Vector<T extends number[]> {
     public toMatrix(): Matrix {
         return new Matrix(this.data.map((e) => [e]));
     }
+
+    public map(fn: (n: number) => number): Vector<T> {
+        return this.construct(this.data.map((x) => fn(x)) as T);
+    }
+
+    protected construct(data: T): Vector<T> {
+        return new Vector(data);
+    }
 }
 
-export class Vector2D extends Vector<[number, number]> {}
+export class Vector2D extends Vector<[number, number]> {
+    protected construct(data: [number, number]): Vector2D {
+        return new Vector2D(data);
+    }
+}
 
 export class Vector3D extends Vector<[number, number, number]> {
     public crossProduct(other: Vector3D): Vector3D {
@@ -49,6 +61,10 @@ export class Vector3D extends Vector<[number, number, number]> {
         const z = this.at(0) * this.at(1) - this.at(1) * other.at(0);
 
         return new Vector3D([x, y, z]);
+    }
+
+    protected construct(data: [number, number, number]): Vector3D {
+        return new Vector3D(data);
     }
 }
 
