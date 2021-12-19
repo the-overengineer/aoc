@@ -2,7 +2,7 @@ import { isEqual } from '@core/utilityBelt';
 import { deepStrictEqual as eq, ok } from 'assert';
 import { getScanners, point, rotations, Point3D, Scanner } from './19';
 
-describe.only('day 19', () => {
+describe('day 19', () => {
     describe('rotations', () => {
         it('should include all the examples', () => {
             const exampleSrc: string = `--- scanner 0 ---

@@ -184,6 +184,20 @@ export class Grid<T> {
         return other.appendBottom(this);
     }
 
+    public row(y: number): T[] {
+        return this.data[y];
+    }
+
+    public column(x: number): T[] {
+        const data: T[] = [];
+
+        for (let y = 0; y < this.height; y++) {
+            data.push(this.data[y][x]);
+        }
+
+        return data;
+    }
+
     public clone(): Grid<T> {
         const data: T[][] = [];
 

@@ -1,7 +1,7 @@
 import '@core/polyfill';
 import { Solution } from '@core/DaySolution';
 import { ArraySet } from '@core/ArraySet';
-import { isEqual } from '@core/utilityBelt';
+import { isEqual, sum } from '@core/utilityBelt';
 
 export interface Point3D {
     x: number;
@@ -77,6 +77,11 @@ export function sub(a: Point3D, b: Point3D): Point3D {
     };
 }
 
+function manhattanDistance(a: Point3D, b: Point3D): number {
+    return sum(unpack(sub(a, b)).map(it => Math.abs(it)));
+}
+
+// This should have been rotation matrices, but my brain is melty today
 const rotators: Array<(p: Point3D) => Point3D> = [
     ({ x, y, z }: Point3D) => point(x, y, z),
     ({ x, y, z }: Point3D) => point(x, z, y),
@@ -200,6 +205,25 @@ function part1(input: string) {
     return beacons.size;
 }
 
+function part2(input: string) {
+    const scanners = getScanners(input);
+    const positioned = resolveScannerPositions(scanners);
+    let maxDistance = 0;
+
+    for (let i = 0; i < positioned.length; i++) {
+        for (let j = i + 1; j < positioned.length; j++) {
+            const distance = manhattanDistance(positioned[i].position, positioned[j].position);
+
+            if (distance > maxDistance) {
+                maxDistance = distance;
+            }
+        }
+    }
+
+    return maxDistance;
+}
+
 export default Solution.raw({
     part1,
+    part2,
 })
