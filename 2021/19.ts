@@ -1,7 +1,7 @@
 import '@core/polyfill';
 import { Solution } from '@core/DaySolution';
 import { ArraySet } from '@core/ArraySet';
-import { isEqual, sum } from '@core/utilityBelt';
+import { isEqual, pairings, sum } from '@core/utilityBelt';
 
 export interface Point3D {
     x: number;
@@ -210,6 +210,13 @@ function part2(input: string) {
     const positioned = resolveScannerPositions(scanners);
     let maxDistance = 0;
 
+    pairings(positioned).forEach(([a, b]) => {
+        const distance = manhattanDistance(a.position, b.position);
+
+        if (distance > maxDistance) {
+            maxDistance = distance;
+        }
+    });
     for (let i = 0; i < positioned.length; i++) {
         for (let j = i + 1; j < positioned.length; j++) {
             const distance = manhattanDistance(positioned[i].position, positioned[j].position);

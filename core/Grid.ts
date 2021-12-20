@@ -20,6 +20,10 @@ export class Grid<T> {
         return this.data[y][x];
     }
 
+    public getOrDefault(y: number, x: number, defaultValue: T): T {
+        return this.data[y]?.[x] ?? defaultValue;
+    }
+
     public set(y: number, x: number, value: T): void {
         this.data[y][x] = value;
     }
@@ -208,7 +212,7 @@ export class Grid<T> {
         return new Grid(data);
     }
 
-    public toString(): string {
-        return this.data.map((row) => row.map((c) => String(c)).join(' ')).join('\n');
+    public toString(separator: string = ' '): string {
+        return this.data.map((row) => row.map((c) => String(c)).join(separator)).join('\n');
     }
 }

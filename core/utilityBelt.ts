@@ -226,6 +226,16 @@ export function leftPad(str: string, len: number, padding: string = '0') {
   return padding.repeat(repeatCount) + str;
 }
 
+export function repeat<T>(x: T, times: number): T[] {
+  const repeated: T[] = [];
+
+  for (let i = 0; i < times; i++) {
+    repeated.push(x);
+  }
+
+  return repeated;
+}
+
 export type BinaryString = string;
 
 export function binaryStringToNumber(bs: BinaryString) {
@@ -257,6 +267,28 @@ export function slidingWindow<T>(items: T[], size: number): T[][] {
   }
 
   return collections;
+}
+
+export function pairings<T>(items: T[], orderMatters: boolean = false): [T, T][] {
+  const pairs: [T, T][] = [];
+
+  if (orderMatters) {
+    for (let i = 0; i < items.length; i++) {
+      for (let j = 0; j < items.length; j++) {
+        if (i !== j) {
+          pairs.push([items[i], items[j]]);
+        }
+      }
+    }
+  } else {
+    for (let i = 0; i < items.length; i++) {
+      for (let j = i + 1; j < items.length; j++) {
+        pairs.push([items[i], items[j]]);
+      }
+    }
+  }
+
+  return pairs;
 }
 
 export class Validate {

@@ -1,4 +1,5 @@
 import { Solution } from '@core/DaySolution';
+import { pairings } from '@core/utilityBelt';
 
 export type SnailFishNum = number | [SnailFishNum, SnailFishNum];
 
@@ -236,18 +237,12 @@ function part2(input: string[]) {
     const numbers: SnailFishNum[] = input.map((row) => JSON.parse(row) as SnailFishNum);
     let max = 0;
 
-    for (let i = 0; i < numbers.length; i++) {
-        for (let j = 0; j < numbers.length; j++) {
-            if (i !== j) {
-                const a = numbers[i];
-                const b = numbers[j];
-                const mag = magnitude(add(a, b));
-                if (mag > max) {
-                    max = mag;
-                }
-            }
+    pairings(numbers, true).forEach(([a, b]) => {
+        const mag = magnitude(add(a, b));
+        if (mag > max) {
+            max = mag;
         }
-    }
+    });
 
     return max;
 }
