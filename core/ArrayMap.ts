@@ -14,5 +14,9 @@ export class ArrayMap<K extends any[], V> extends Map<any, V> {
     public has(x: K): boolean {
       return super.has(JSON.stringify(x));
     }
+
+    public keyList(): Array<K> {
+      return Array.from(super.keys()).map((k) => JSON.parse(k));
+    }
 }
   
