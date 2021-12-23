@@ -1,6 +1,5 @@
 import '@core/polyfill';
 import { Solution } from '@core/DaySolution';
-import { dijkstraSearch } from '@core/search';
 
 type AmphipodType = 'A' | 'B' | 'C' | 'D';
 
@@ -21,6 +20,7 @@ interface State {
 }
 
 type Cost = number;
+type History = Set<string>;
 
 // Ignore hall spaces above the rooms, those are not valid stopping points
 // We care only about singular fluid moves between rooms and free spots,
@@ -82,15 +82,18 @@ function serialize(state: State): string {
 }
 
 function isValidRoomToMoveInto(room: Room): boolean {
+    // Empty rooms are always good
     if (room.occupants.every(_ => _ == null)) {
         return true;
     }
 
+    // We don't touch solved rooms
     if (isRoomDone(room)) {
         return false;
     }
 
-    return !room.occupants.some(_ => _ != null && _ !== room.roomType);
+    // Every slot is either empty or correct thus far
+    return room.occupants.every(_ => _ == null || _ === room.roomType);
 }
 
 function isRoomDone(room: Room): boolean {
@@ -98,14 +101,17 @@ function isRoomDone(room: Room): boolean {
 }
 
 function isValidRoomToMoveOutOf(room: Room): boolean {
+    // We don't touch solved rooms
     if (isRoomDone(room)) {
         return false;
     }
 
+    // Nothing to move out of an empty room
     if (room.occupants.every(_ => _ == null)) {
         return false;
     }
 
+    // There's something to fix there
     return room.occupants.some(_ => _ !== room.roomType);
 }
 
@@ -118,20 +124,21 @@ function fillHall(halls: Hall[], hall: Hall, occupant: AmphipodType): Hall[] {
 }
 
 function clearRoom(rooms: Room[], room: Room): [Room[], Cost] {
-    let nullIndex: number = 0;
+    let occupantIndex: number = 0;
     const nextRooms = rooms.map((r) => {
         if (r !== room) {
             return r;
         }
 
-        nullIndex = r.occupants.findIndex(_ => _ == null);
+        occupantIndex = r.occupants.findIndex(_ => _ != null);
+
         return {
             ...r,
-            occupants: r.occupants.map((o, i) => i === nullIndex ? undefined : o),
+            occupants: r.occupants.map((o, i) => i === occupantIndex ? undefined : o),
         }
     });
 
-    return [nextRooms, nullIndex + 1];
+    return [nextRooms, occupantIndex + 1];
 }
 
 function fillRoom(rooms: Room[], room: Room, occupant: AmphipodType): [Room[], Cost] {
@@ -141,7 +148,7 @@ function fillRoom(rooms: Room[], room: Room, occupant: AmphipodType): [Room[], C
             return r;
         }
 
-        const reverseNullIndex = r.occupants.reverse().findIndex(_ => _ == null);
+        const reverseNullIndex = [...r.occupants].reverse().findIndex(_ => _ == null);
         nullIndex = r.occupants.length - reverseNullIndex - 1;
         return {
             ...r,
@@ -269,7 +276,7 @@ function findSolution(initialState: State): number {
 
             const snext = serialize(next);
 
-            if (costMap.has(snext) && cost > costMap.get(snext)!) {
+            if (costMap.has(snext) && costMap.get(snext)! < cost) {
                 continue;
             } else {
                 costMap.set(snext, cost);
@@ -287,6 +294,25 @@ function part1(rows: string[]) {
     return findSolution(state);
 }
 
+function part2(rows: string[]) {
+    const state = parseState(rows);
+    const insert: AmphipodType[][] = [
+        ['D', 'D'],
+        ['C', 'B'],
+        ['B', 'A'],
+        ['A', 'C'],
+    ];
+    const initialState = {
+        ...state,
+        rooms: state.rooms.map((r, i) => ({
+            ...r,
+            occupants: [r.occupants[0], ...insert[i], r.occupants[1]],
+        })),
+    };
+    return findSolution(initialState);
+}
+
 export default Solution.lines({
     part1,
+    part2,
 });
