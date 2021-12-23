@@ -35,6 +35,13 @@ interface Set<T> {
   difference(other: Set<T>): Set<T>;
   isSupersetOf(other: Set<T>): boolean;
   isSubsetOf(other: Set<T>): boolean;
+  with(value: T): Set<T>;
+}
+
+Set.prototype.with = function(value) {
+  const res = new Set(Array.from(this));
+  res.add(value);
+  return res;
 }
 
 Set.prototype.union = function(other) {
