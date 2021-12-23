@@ -1,6 +1,6 @@
 import '@core/polyfill';
 import { Solution } from '@core/DaySolution';
-import { move } from './21';
+import { dijkstraSearch } from '@core/search';
 
 type AmphipodType = 'A' | 'B' | 'C' | 'D';
 
@@ -12,8 +12,7 @@ interface Hall {
 interface Room {
     x: number;
     roomType: AmphipodType;
-    topOccupant?: AmphipodType;
-    bottomOccupant?: AmphipodType;
+    occupants: Array<AmphipodType | undefined>;
 }
 
 interface State {
@@ -21,7 +20,7 @@ interface State {
     rooms: Room[];
 }
 
-type History = Set<string>;
+type Cost = number;
 
 // Ignore hall spaces above the rooms, those are not valid stopping points
 // We care only about singular fluid moves between rooms and free spots,
@@ -34,14 +33,13 @@ function parseState(rows: string[]): State {
     for (let y = 0; y < rows.length - 2; y++) {
         for (let x = 0; x < rows[y].length; x++) {
             if (rows[y][x] === '.' && !/[A-D]/.test(rows[y + 1][x])) {
-                halls.push({ x });
+                halls.push({ x } as Hall);
             } else if (/[A-D]/.test(rows[y][x])) {
                 const topOccupant = rows[y][x] as AmphipodType;
                 const bottomOccupant = rows[y + 1][x] as AmphipodType;
                 rooms.push({
                     x,
-                    topOccupant,
-                    bottomOccupant,
+                    occupants: [topOccupant, bottomOccupant],
                     roomType: 'A', // We'll fix this,
                 })
             }
@@ -58,7 +56,7 @@ function parseState(rows: string[]): State {
 }
 
 function isDone(state: State) {
-    return state.rooms.every(isRoomOk);
+    return state.rooms.every(isRoomDone);
 }
 
 function isBetween(x: number, x1: number, x2: number) {
@@ -66,6 +64,10 @@ function isBetween(x: number, x1: number, x2: number) {
     const maxX = Math.max(x1, x2);
 
     return x > minX && x < maxX;
+}
+
+function isMoveBlocked(state: State, x1: number, x2: number) {
+    return state.halls.some((h) => h.occupant != null && isBetween(h.x, x1, x2));
 }
 
 const costPerMove: Record<AmphipodType, number> = {
@@ -79,191 +81,201 @@ function serialize(state: State): string {
     return JSON.stringify(state);
 }
 
-function painted(state: State): string {
-    const roomTopAt = (x: number) => state.rooms.find((r) => r.x === x)!.topOccupant ?? '.';
-    const roomBotAt = (x: number) => state.rooms.find((r) => r.x === x)!.bottomOccupant ?? '.';
-    const hallAt = (x: number) => state.halls.find((h) => h.x === x)!.occupant ?? '.';
+function isValidRoomToMoveInto(room: Room): boolean {
+    if (room.occupants.every(_ => _ == null)) {
+        return true;
+    }
 
-    return `#############
-#${hallAt(1)}${hallAt(2)}.${hallAt(4)}.${hallAt(6)}.${hallAt(8)}.${hallAt(10)}${hallAt(11)}#
-###${roomTopAt(3)}#${roomTopAt(5)}#${roomTopAt(7)}#${roomTopAt(9)}###
-  #${roomBotAt(3)}#${roomBotAt(5)}#${roomBotAt(7)}#${roomTopAt(7)}#
-  #########`;
+    if (isRoomDone(room)) {
+        return false;
+    }
+
+    return !room.occupants.some(_ => _ != null && _ !== room.roomType);
 }
 
-type Move = [State, number];
-
-function isRoomFree(room: Room) {
-    return room.bottomOccupant == null
-        || room.topOccupant == null && room.bottomOccupant === room.roomType;
+function isRoomDone(room: Room): boolean {
+    return room.occupants.every(_ => _ === room.roomType);
 }
 
-function isRoomOk(room: Room) {
-    return room.bottomOccupant === room.topOccupant && room.topOccupant === room.roomType;
+function isValidRoomToMoveOutOf(room: Room): boolean {
+    if (isRoomDone(room)) {
+        return false;
+    }
+
+    if (room.occupants.every(_ => _ == null)) {
+        return false;
+    }
+
+    return room.occupants.some(_ => _ !== room.roomType);
 }
 
-function isRoom(a: any): a is Room {
-    return a.roomType != null;
+function clearHall(halls: Hall[], hall: Hall): Hall[] {
+    return halls.map((h) => h === hall ? { ...h, occupant: undefined } : h);
 }
 
-function isHallway(a: any): a is Hall {
-    return a.roomType == null;
+function fillHall(halls: Hall[], hall: Hall, occupant: AmphipodType): Hall[] {
+    return halls.map((h) => h === hall ? { ...h, occupant } : h);
 }
 
-function canMoveBetween(state: State, pod: AmphipodType, room: Room, hallway: Hall): boolean;
-function canMoveBetween(state: State, pod: AmphipodType, hallway: Hall, room: Room): boolean;
-function canMoveBetween(state: State, pod: AmphipodType, room: Room, room2: Room): boolean
-function canMoveBetween(state: State, pod: AmphipodType, a: Room | Hall, b: Room | Hall): boolean {
-    const canMoveThrough = !state.halls.some((h) => h !== b && h !== a && h.occupant != null && isBetween(h.x, a.x, b.x));
-    const canMoveOutOf = isHallway(a) ? a.occupant != null : (a.topOccupant === pod || a.topOccupant == null && a.bottomOccupant === pod);
-    const canMoveInto = isHallway(b) ? b.occupant == null : (b.topOccupant == null && (b.bottomOccupant == null || b.bottomOccupant === b.roomType));
-
-    return canMoveOutOf && canMoveThrough && canMoveInto;
-}
-
-function moveHallwayToRoom(state: State, hallway: Hall, room: Room): Move {
-    const occupant = hallway.occupant!;
-    const halls: Hall[] = state.halls.map((h) => h === hallway ? { ...h, occupant: undefined } : h);
-    const rooms: Room[] = state.rooms.map((r) => {
+function clearRoom(rooms: Room[], room: Room): [Room[], Cost] {
+    let nullIndex: number = 0;
+    const nextRooms = rooms.map((r) => {
         if (r !== room) {
             return r;
         }
 
-        return r.bottomOccupant != null
-            ? { ...r, topOccupant: occupant! }
-            : { ...r, bottomOccupant: occupant! };
+        nullIndex = r.occupants.findIndex(_ => _ == null);
+        return {
+            ...r,
+            occupants: r.occupants.map((o, i) => i === nullIndex ? undefined : o),
+        }
     });
 
-    const cost = room.bottomOccupant == null
-        ? (Math.abs(room.x - hallway.x) + 2) * costPerMove[occupant]
-        : (Math.abs(room.x - hallway.x) + 1) * costPerMove[occupant];
+    return [nextRooms, nullIndex + 1];
+}
+
+function fillRoom(rooms: Room[], room: Room, occupant: AmphipodType): [Room[], Cost] {
+    let nullIndex = 0;
+    const nextRooms = rooms.map((r) => {
+        if (r !== room) {
+            return r;
+        }
+
+        const reverseNullIndex = r.occupants.reverse().findIndex(_ => _ == null);
+        nullIndex = r.occupants.length - reverseNullIndex - 1;
+        return {
+            ...r,
+            occupants: r.occupants.map((o, i) => i === nullIndex ? occupant : o),
+        };
+    });
+
+    return [nextRooms, nullIndex + 1];
+}
+
+function hallToRoom(state: State, hall: Hall, room: Room): [State, Cost] {
+    const occupant = hall.occupant!;
+    const halls = clearHall(state.halls, hall);
+    const [rooms, entryMoves] = fillRoom(state.rooms, room, occupant);
+    const cost = (Math.abs(room.x - hall.x) + entryMoves) * costPerMove[occupant];
 
     return [
-        { halls, rooms },
+        { halls, rooms},
         cost,
     ];
 }
 
-function moveRoomToHallway(state: State, room: Room, hallway: Hall): Move {
-    if (room.topOccupant != null) {
-        const rooms = state.rooms.map((r) => r === room ? { ...r, topOccupant: undefined }: r);
-        const halls = state.halls.map((h) => h === hallway ? { ...h, occupant: room.topOccupant } : h);
-        const cost = (Math.abs(room.x - hallway.x) + 1) * costPerMove[room.topOccupant];
-
-        return [
-            { rooms, halls},
-            cost,
-        ];
-    } else if (room.bottomOccupant != null) {
-        const rooms = state.rooms.map((r) => r === room ? { ...r, bottomOccupant: undefined }: r);
-        const halls = state.halls.map((h) => h === hallway ? { ...h, occupant: room.bottomOccupant } : h);
-        const cost = (Math.abs(room.x - hallway.x) + 2) * costPerMove[room.bottomOccupant];
-
-        return [
-            { rooms, halls},
-            cost,
-        ];
-    }
-
-    throw new Error('never happens');
-}
-
-function moveRoomToRoom(state: State, room: Room, otherRoom: Room): Move {
-    const outOfTop = room.topOccupant != null ? true : false;
-    const outCost = outOfTop ? 1 : 2;
-    const occupant = room.topOccupant ?? room.bottomOccupant!;
-    const intoTop = otherRoom.bottomOccupant != null ? true : false;
-    const inCost = intoTop ? 1 : 2;
-    const totalCost = (Math.abs(room.x - otherRoom.x) + inCost + outCost) * costPerMove[occupant];
-    const rooms = state.rooms.map((r): Room => {
-        if (r === room) {
-            return outOfTop ? { ...r, topOccupant: undefined } : { ...r, bottomOccupant: undefined };
-        } else if (r === otherRoom) {
-            return intoTop ? { ...r, topOccupant: occupant } : { ...r, bottomOccupant: occupant };
-        } else {
-            return r;
-        }
-    });
+function roomToHall(state: State, room: Room, hall: Hall): [State, Cost] {
+    const occupant = room.occupants.find(_ => _ != null)!;
+    const [rooms, exitMoves] = clearRoom(state.rooms, room);
+    const halls = fillHall(state.halls, hall, occupant);
+    const cost = (Math.abs(room.x - hall.x) + exitMoves) * costPerMove[occupant];
 
     return [
-        { halls: state.halls, rooms },
-        totalCost,
+        { halls, rooms},
+        cost,
     ];
+}
+
+function getHallwayToRoomMoves(state: State): Array<[State, number]> {
+    const moves: Array<[State, number]> = [];
+
+    // Going from any hallway to any room
+    const occupiedHallways = state.halls.filter((h) => h.occupant != null);
+
+    for (const hall of occupiedHallways) {    
+        const room = state.rooms.find((r) => r.roomType === hall.occupant!)!;
+
+        if (!isValidRoomToMoveInto(room)) {
+            continue;
+        }
+
+        if (isMoveBlocked(state, hall.x, room.x)) {
+            continue;
+        }
+
+        moves.push(hallToRoom(state, hall, room));
+    }
+
+    return moves;
+}
+
+function getRoomToHallwayMoves(state: State): Array<[State, number]> {
+    const moves: Array<[State, number]> = [];
+
+    const validRooms = state.rooms.filter(isValidRoomToMoveOutOf);
+
+    for (const room of validRooms) {
+        // going to a free hallway
+        const freeHalls = state.halls.filter((h) => h.occupant == null);
+
+        for (const hall of freeHalls) {
+            // We can't go to any hall that is blocked
+            if (isMoveBlocked(state, room.x, hall.x)) {
+                continue;
+            }
+
+            moves.push(roomToHall(state, room, hall));
+        }
+    }
+
+    return moves;
 }
 
 function getNextMoves(state: State): Array<[State, number]> {
     const moves: Array<[State, number]> = [];
 
-    const occupiedHallways = state.halls.filter(_ => _.occupant != null);
-    const unoccupiedHallways = state.halls.filter(_ => _.occupant == null);
-    const unsortedRooms = state.rooms.filter(_ => !isRoomOk(_));
-    const relevantRoom = (a: AmphipodType) => unsortedRooms.find((r) => r.roomType === a);
-
-    occupiedHallways.forEach((hall) => {
-        const room = relevantRoom(hall.occupant!);
-        if (room != null && canMoveBetween(state, hall.occupant!, hall, room)) {
-            moves.push(moveHallwayToRoom(state, hall, room));
-        }
-    });
-
-    unsortedRooms.forEach((room) => {
-        if (room.topOccupant == null && room.bottomOccupant == null) {
-            return;
-        }
-
-        const occupant = room.topOccupant ?? room.bottomOccupant!;
-        const targetRoom = relevantRoom(occupant);
-
-        if (targetRoom != null && canMoveBetween(state, occupant, room, targetRoom)) {
-            moves.push(moveRoomToRoom(state, room, targetRoom));
-        }
-    
-        unoccupiedHallways.forEach((hall) => {
-            if (canMoveBetween(state, occupant, room, hall)) {
-                moves.push(moveRoomToHallway(state, room, hall));
-            }
-        });
-    });
+    moves.push(...getHallwayToRoomMoves(state));
+    moves.push(...getRoomToHallwayMoves(state));
 
     return moves;
 }
 
 function findSolution(initialState: State): number {
-    const queue: Array<Move> = [];
+    const queue: Array<[State, number]> = [];
     let minCost: number = Infinity;
+    const costMap = new Map<string, number>();
 
     queue.push([
         initialState,
         0,
-        // new Set([serialize(initialState)]),
     ]);
+
+    costMap.set(serialize(initialState), 0);
 
     while (queue.length > 0) {
         const [curr, currCost] = queue.pop()!;
 
+        if (currCost > minCost) {
+            continue;
+        }
+
         if (isDone(curr)) {
             if (currCost < minCost) {
-                console.log('next best', currCost);
+                console.log('update', currCost);
                 minCost = currCost;
             }
-            continue;
-        } else if (currCost > minCost) {
-            // dead end, nothing to find there
             continue;
         }
 
         const moves = getNextMoves(curr);
 
-        for (const [next, moveCost] of moves) {
-            if (moveCost + currCost > minCost) {
-                // it's worse than we we already have, give up!
+        for (const [next, c] of moves) {
+            const cost = currCost + c;
+
+            // dead end, ignore this
+            if (cost > minCost) {
                 continue;
             }
 
-            // const copy = new Set([...visited]);
-            // const nextVisited = copy.add(snext);
+            const snext = serialize(next);
 
-            queue.push([next, moveCost + currCost]);
+            if (costMap.has(snext) && cost > costMap.get(snext)!) {
+                continue;
+            } else {
+                costMap.set(snext, cost);
+            }
+
+            queue.push([next, cost]);
         }
     }
 
