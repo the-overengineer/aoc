@@ -130,7 +130,9 @@ export function setEquals<T>(a: Set<T>, b: Set<T>): boolean {
 }
 
 export function isEqual<T>(a: T, b: T): boolean {
-  if (Array.isArray(a) && Array.isArray(b)) {
+  if (a instanceof Set && b instanceof Set) {
+    return a.size === b.size && Array.from(a.values()).every((v) => b.has(v));
+  } else if (Array.isArray(a) && Array.isArray(b)) {
     return a.length === b.length && a.every((x, i) => isEqual(x, b[i]));
   } else if (typeof a === 'object' && typeof b === 'object') {
     const aKeys = Object.keys(a);
@@ -289,6 +291,27 @@ export function pairings<T>(items: T[], orderMatters: boolean = false): [T, T][]
   }
 
   return pairs;
+}
+
+export function memoized<A, R>(fn: (a: A) => R): (a: A) => R;
+export function memoized<A, B, R>(fn: (a: A, b: B) => R): (a: A, b: B) => R;
+export function memoized<A, B, C, R>(fn: (a: A, b: B, c: C) => R): (a: A, b: B, c: C) => R;
+export function memoized(fn: Function) {
+  const memo = new Map<string, any>();
+
+  return function(...args: any[]) {
+    const strArgs = JSON.stringify(args);
+  
+    if (memo.has(strArgs)) {
+      return memo.get(strArgs)!;
+    }
+  
+    const result = fn(...args);
+
+    memo.set(strArgs, result);
+
+    return result;
+  }
 }
 
 export class Validate {

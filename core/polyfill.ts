@@ -36,6 +36,7 @@ interface Set<T> {
   isSupersetOf(other: Set<T>): boolean;
   isSubsetOf(other: Set<T>): boolean;
   with(value: T): Set<T>;
+  without(value: T): Set<T>;
 }
 
 Set.prototype.with = function(value) {
@@ -43,6 +44,10 @@ Set.prototype.with = function(value) {
   res.add(value);
   return res;
 }
+
+Set.prototype.without = function(value) {
+  return this.difference(new Set(value));
+};
 
 Set.prototype.union = function(other) {
   const result = new Set();
