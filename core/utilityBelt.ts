@@ -217,6 +217,22 @@ export function gcdAll(nums: number[]): number {
   return gcdAll([gcd(a, b), ...rest])
 }
 
+export function groupBy<T, K extends string>(xs: T[], fn: (x: T) => K): Record<K, T[]> {
+  const groups = {} as Record<K, T[]>;
+
+  xs.forEach((x) => {
+    const key = fn(x);
+
+    if (groups[key] == null) {
+      groups[key] = [];
+    }
+
+    groups[key].push(x);
+  });
+
+  return groups;
+}
+
 export function leftPad(str: string, len: number, padding: string = '0') {
   if (str.length >= len) {
     return str;

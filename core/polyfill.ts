@@ -22,11 +22,16 @@ String.prototype.reverse = function() {
 };
 
 interface Array<T> {
+  peek(): T;
   toSet(): Set<T>;
 }
 
 Array.prototype.toSet = function() {
   return new Set(this);
+};
+
+Array.prototype.peek = function() {
+  return this[this.length - 1];
 };
 
 interface Set<T> {

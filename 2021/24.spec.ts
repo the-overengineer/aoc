@@ -1,5 +1,5 @@
 import { deepStrictEqual as eq } from 'assert';
-import { SymbolExpression } from './24';
+import { SymbolExpression } from './24.old';
 
 describe.only('day 24', () => {
     describe('symbolic expressions', () => {
