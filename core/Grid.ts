@@ -1,4 +1,4 @@
-import { transpose } from '@core/utilityBelt';
+import { range, transpose } from '@core/utilityBelt';
 
 type GridCallback<T, R> = (cell: T, row: number, column: number, grid: T[][]) => R;
 type ReduceGridCallback<T, R> = (acc: R, cell: T, row: number, column: number, grid: T[][]) => R;
@@ -14,6 +14,14 @@ export class Grid<T> {
 
     public get height() {
         return this.data?.length ?? 0;
+    }
+
+    public get rows(): T[][] {
+        return this.data;
+    }
+
+    public get columns(): T[][] {
+        return range(0, this.width).map((i) => this.column(i));
     }
 
     public get(y: number, x: number): T {

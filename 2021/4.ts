@@ -13,26 +13,17 @@ class BingoBoard extends Grid<number> {
         );
     }
 
-    private readonly transposedGrid: Grid<number> = this.transposed();
-
     public getUnmarked(selected: Set<number>): Set<number> {
         return this.reduce((acc, cell) => selected.has(cell) ? acc : acc.with(cell), new Set<number>());
     }
 
     public isWin(selected: Set<number>): boolean {
-        return this.hasRowWin(selected) || this.hasColumnWin(selected);
+        return this.rows.some((row) => row.every((num) => selected.has(num)))
+            || this.columns.some((col) => col.every((num) => selected.has(num)));
     }
 
     public getScore(selected: Set<number>, draw: number): number {
         return draw * sum(Array.from(this.getUnmarked(selected)));
-    }
-
-    private hasRowWin(selected: Set<number>): boolean {
-        return this.data.some((row) => row.every((num) => selected.has(num)));
-    }
-
-    private hasColumnWin(selected: Set<number>): boolean {
-        return this.transposedGrid.data.some((row) => row.every((num) => selected.has(num)));
     }
 }
 
@@ -43,11 +34,9 @@ interface TaskInput {
 
 function parseInput(text: string): TaskInput {
     const [drawnRow, ...boardDescriptors] = text.split('\n\n');
-    const drawn = drawnRow.split(',').map(_ => _.toInt());
-    const boards = boardDescriptors.map((desc) => BingoBoard.of(desc));
     return {
-        drawn,
-        boards,
+        drawn: drawnRow.split(',').map(_ => _.toInt()),
+        boards: boardDescriptors.map((desc) => BingoBoard.of(desc))
     };
 }
 
