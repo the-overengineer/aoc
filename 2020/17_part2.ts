@@ -1,10 +1,10 @@
-import { ArraySet } from '@core/ArraySet';
+import { GenericSet } from '@core/GenericSet';
 
 type Coordinate = [number, number, number, number];
 
 class CubeSpace {
   public constructor(
-    public readonly active: ArraySet<Coordinate>,
+    public readonly active: GenericSet<Coordinate>,
   ) {}
 
   public get activeCount(): number {
@@ -12,7 +12,7 @@ class CubeSpace {
   }
 
   public next(): CubeSpace {
-    const nextActive = new ArraySet<Coordinate>();
+    const nextActive = new GenericSet<Coordinate>();
 
     const [[minX, minY, minZ, minW], [maxX, maxY, maxZ, maxW]] = this.bounds;
 
@@ -121,7 +121,7 @@ class CubeSpace {
   }
 
   public static parseSlice(slice: string) {
-    const active = new ArraySet<Coordinate>()
+    const active = new GenericSet<Coordinate>()
     const rows = slice.split('\n');
     rows.forEach((row, y) => {
       row.split('').forEach((symbol, x) => {

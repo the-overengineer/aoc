@@ -1,4 +1,4 @@
-import { ArraySet } from '@core/ArraySet';
+import { GenericSet } from '@core/GenericSet';
 import { Grid } from '@core/Grid';
 import { Solution } from '@core/DaySolution';
 
@@ -18,7 +18,7 @@ function uptickGrid(grid: Grid<number>): Grid<number> {
     return grid.map((cell) => cell + 1);
 }
 
-function spreadGlow(grid: Grid<number>, flashed: ArraySet<[number, number]>): boolean {
+function spreadGlow(grid: Grid<number>, flashed: GenericSet<[number, number]>): boolean {
     let changed: boolean = false;
 
     grid.forEach((cell, y, x) => {
@@ -48,7 +48,7 @@ function levelOffGridAndCollectFlashes(grid: Grid<number>): number {
 
 export function octopusGlowStep(grid: Grid<number>): [Grid<number>, number] {
     const nextGrid = uptickGrid(grid);
-    const flashed = new ArraySet<[number, number]>();
+    const flashed = new GenericSet<[number, number]>();
 
     let shouldPropagate = true;
     while (shouldPropagate) {

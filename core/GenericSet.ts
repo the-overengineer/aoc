@@ -1,4 +1,4 @@
-export class ArraySet<T extends any[]> extends Set<any> {
+export class GenericSet<T> extends Set<any> {
   public add(x: T): this {
     return super.add(JSON.stringify(x));
   }

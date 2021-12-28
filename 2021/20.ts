@@ -1,11 +1,11 @@
-import { ArrayMap } from '@core/ArrayMap';
+import { GenericMap } from '@core/GenericMap';
 import { Solution } from '@core/DaySolution';
 import { Grid } from '@core/Grid';
 import { repeat } from '@core/utilityBelt';
 
 export type Sym = '#' | '.'
 export type Algorithm = Array<Sym>;
-export type LightMap = ArrayMap<[number, number], Sym>;
+export type LightMap = GenericMap<[number, number], Sym>;
 
 interface Enhanced {
     lightMap: LightMap;
@@ -14,7 +14,7 @@ interface Enhanced {
 
 function parse(input: string): [Algorithm, LightMap] {
     const [algorithm, lines] = input.split('\n\n');
-    const lightMap = new ArrayMap<[number, number], Sym>();
+    const lightMap = new GenericMap<[number, number], Sym>();
 
     lines.split('\n').forEach((row, y) => {
         row.split('').forEach((cell, x) => {
@@ -70,7 +70,7 @@ function enhance(map: LightMap, algorithm: Algorithm, outsideSymbol: Sym): Enhan
         ? algorithm[0]
         : algorithm[algorithm.length - 1];
     
-    const nextMap = new ArrayMap<[number, number], Sym>();
+    const nextMap = new GenericMap<[number, number], Sym>();
     const [minX, maxX] = xBounds(map);
     const [minY, maxY] = yBounds(map);
 

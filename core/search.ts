@@ -1,5 +1,5 @@
-import { ArrayMap } from './ArrayMap';
-import { ArraySet } from './ArraySet';
+import { GenericMap } from './GenericMap';
+import { GenericSet } from './GenericSet';
 import { argmin, isEqual } from './utilityBelt';
 
 export function dijkstraSearch<T extends any[]>(
@@ -8,10 +8,10 @@ export function dijkstraSearch<T extends any[]>(
     source: T,
     target: T,
 ): T[] {
-    const vertexSet: ArraySet<T> = new ArraySet();
-    const closedSet: ArraySet<T> = new ArraySet();
-    const dist = new ArrayMap<T, number>();
-    const prev = new ArrayMap<T, T>();
+    const vertexSet: GenericSet<T> = new GenericSet();
+    const closedSet: GenericSet<T> = new GenericSet();
+    const dist = new GenericMap<T, number>();
+    const prev = new GenericMap<T, T>();
 
     vertexSet.add(source);
     dist.set(source, 0);
@@ -44,6 +44,58 @@ export function dijkstraSearch<T extends any[]>(
 
             const risk = getCost(neighbour);
             const cost = dist.get(vertex)! + risk;
+
+            if (dist.get(neighbour) == null || cost < dist.get(neighbour)!) {
+                dist.set(neighbour, cost);
+                prev.set(neighbour, vertex);
+            }
+
+        }
+    }
+
+    throw new Error('Could not find shortest path!');
+}
+
+type Cost = number;
+
+export function genericDijkstraSearch<T>(
+    getNeighbours: (member: T) => [T, Cost][],
+    source: T,
+    isDone: (it: T, visited: Set<T>) => boolean,
+): T[] {
+    const vertexSet: GenericSet<T> = new GenericSet();
+    const closedSet: GenericSet<T> = new GenericSet();
+    const dist = new GenericMap<T, number>();
+    const prev = new GenericMap<T, T>();
+
+    vertexSet.add(source);
+    dist.set(source, 0);
+
+    while (vertexSet.size > 0) {
+        const vertex = argmin(vertexSet.toList(), (v) => dist.get(v));
+
+        closedSet.add(vertex);
+        vertexSet.delete(vertex);
+
+        if (isDone(vertex, closedSet)) {
+            const reversePath: T[] = [];
+            let current = vertex;
+
+            while (current != null) {
+                reversePath.push(current);
+                current = prev.get(current)!;
+
+                if (current == null) {
+                    return reversePath.reverse();
+                }
+            }
+        }
+
+        const neighbours = getNeighbours(vertex)
+            .filter(([n]) => !closedSet.has(n));
+
+        for (const [neighbour, cost] of neighbours) {
+            vertexSet.add(neighbour);
 
             if (dist.get(neighbour) == null || cost < dist.get(neighbour)!) {
                 dist.set(neighbour, cost);

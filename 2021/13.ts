@@ -1,8 +1,8 @@
 import '@core/polyfill';
-import { ArraySet } from '@core/ArraySet';
+import { GenericSet } from '@core/GenericSet';
 import { Solution } from '@core/DaySolution';
 
-type DotPaper = ArraySet<[number, number]>;
+type DotPaper = GenericSet<[number, number]>;
 
 enum FoldDirection {
     Up = 'Up',
@@ -22,7 +22,7 @@ interface TaskInput {
 function parseInstructions(input: string): TaskInput {
     const [paper, instructionList] = input.split('\n\n');
 
-    const dotPaper = new ArraySet<[number, number]>(
+    const dotPaper = new GenericSet<[number, number]>(
         paper.split('\n')
             .map((row) => row.split(',').map(_ => _.toInt())),
     );
@@ -55,7 +55,7 @@ function foldAcross(coordinate: number, foldAxis: number): number {
 }
 
 function foldPaper(paper: DotPaper, fold: Fold): DotPaper {
-    const foldedPaper: DotPaper = new ArraySet();
+    const foldedPaper: DotPaper = new GenericSet();
 
     for (const [x, y] of paper.toList()) {
         if (fold.direction === FoldDirection.Left && x !== fold.at) {

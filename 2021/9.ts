@@ -1,4 +1,4 @@
-import { ArraySet } from '@core/ArraySet';
+import { GenericSet } from '@core/GenericSet';
 import { product } from '@core/utilityBelt';
 import { Solution } from '@core/DaySolution';
 
@@ -40,9 +40,9 @@ function part1(lines: string[]) {
     return riskLevel;
 }
 
-type Basin = ArraySet<[number, number]>;
+type Basin = GenericSet<[number, number]>;
 
-function flood(map: number[][], i: number, j: number, basin: Basin = new ArraySet<[number, number]>()): Basin {
+function flood(map: number[][], i: number, j: number, basin: Basin = new GenericSet<[number, number]>()): Basin {
     if (i < 0 || i >= map.length || j < 0 || j >= map[0].length) {
         return basin;
     }

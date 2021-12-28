@@ -1,4 +1,4 @@
-export class ArrayMap<K extends any[], V> extends Map<any, V> {
+export class GenericMap<K, V> extends Map<any, V> {
     public set(key: K, value: V): this {
         return super.set(JSON.stringify(key), value);
     }

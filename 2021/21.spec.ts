@@ -4,7 +4,7 @@ import {
     move,
 } from './21';
 
-describe.only('day 21', () => {
+describe('day 21', () => {
     describe('deterministic dice', () => {
         it('should increment by one every roll', () => {
             const dice = getDeterministicDie();

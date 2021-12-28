@@ -9,6 +9,29 @@ export function gaussSum(n: number) {
   return (n + 1) * n / 2;
 }
 
+export function head<T>(xs: T[]): T {
+  return xs[0];
+}
+
+export function tail<T>(xs: T[]): T[] {
+  return xs.slice(1);
+}
+
+export function init<T>(xs: T[]): T[] {
+  return xs.slice(1, xs.length);
+}
+
+export function last<T>(xs: T[]): T {
+  return xs[xs.length - 1];
+}
+
+export function pipe<A1, A2, R>(a: (a1: A1) => A2, b: (a2: A2) => R): (a1: A1) => R;
+export function pipe<A1, A2, A3, R>(a: (a1: A1) => A2, b: (a2: A2) => A3, c: (a3: A3) => R): (a1: A1) => R;
+export function pipe<A1, A2, A3, A4, R>(a: (a1: A1) => A2, b: (a2: A2) => A3, c: (a3: A3) => R, d: (a4: A4) => R): (a1: A1) => R;
+export function pipe(...args: any[]): any {
+  return (x0: any) => args.reduce((val, fn) => fn(val), x0);
+}
+
 export function argmin<T, R>(xs: T[], fn: (x: T) => R): T {
   let best = xs[0];
   let bestScore = fn(xs[0]);
@@ -252,6 +275,26 @@ export function repeat<T>(x: T, times: number): T[] {
   }
 
   return repeated;
+}
+
+export function permutations<T>(inputArr: T[]): T[][] {
+  let result: T[][] = [];
+
+  const permute = (arr: T[], m: T[] = []) => {
+    if (arr.length === 0) {
+      result.push(m)
+    } else {
+      for (let i = 0; i < arr.length; i++) {
+        let curr = [...arr];
+        let next = curr.splice(i, 1);
+        permute(curr.slice(), m.concat(next))
+      }
+    }
+  }
+
+  permute(inputArr)
+
+  return result;
 }
 
 export type BinaryString = string;

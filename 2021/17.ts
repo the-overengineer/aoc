@@ -1,7 +1,7 @@
 import '@core/polyfill';
 import { Solution } from '@core/DaySolution';
 import { gaussSum, isEqual } from '@core/utilityBelt';
-import { ArraySet } from '@core/ArraySet';
+import { GenericSet } from '@core/GenericSet';
 
 interface Area {
     x: [number, number];
@@ -69,7 +69,7 @@ function part1(input: string) {
 
 function part2(input: string) {
     const area = parseArea(input);
-    const visited = new ArraySet<[number, number]>();
+    const visited = new GenericSet<[number, number]>();
     const candidates: [number, number][] = [[0, 0]];
     let hitCount = 0;
     const maxX = Math.max(Math.abs(area.x[0]), Math.abs(area.x[1]));

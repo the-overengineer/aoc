@@ -1,7 +1,7 @@
 import { deepStrictEqual as eq } from 'assert';
 import { SymbolExpression } from './24.old';
 
-describe.only('day 24', () => {
+describe('day 24', () => {
     describe('symbolic expressions', () => {
         describe('add', () => {
             it('should add constants', () => {

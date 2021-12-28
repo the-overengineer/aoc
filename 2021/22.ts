@@ -1,6 +1,6 @@
 import '@core/polyfill';
 import { Solution } from '@core/DaySolution';
-import { ArrayMap } from '@core/ArrayMap';
+import { GenericMap } from '@core/GenericMap';
 import { sum } from '@core/utilityBelt';
 
 type Range = [number, number];
@@ -12,7 +12,7 @@ interface Instruction {
     z: Range;
 }
 
-class Counter extends ArrayMap<[Range, Range, Range], number> {
+class Counter extends GenericMap<[Range, Range, Range], number> {
     public update(key: [Range, Range, Range], by: number) {
         if (this.has(key)) {
             this.set(key, this.get(key)! + by);

@@ -1,4 +1,4 @@
-import { ArraySet } from '@core/ArraySet';
+import { GenericSet } from '@core/GenericSet';
 import { count, flatten, readLines } from '@core/utilityBelt';
 
 
@@ -62,7 +62,7 @@ async function readTiles(): Promise<ITile[]> {
 
 async function getInitialTiles() {
   const tiles = await readTiles();
-  const flipped = new ArraySet<ITile>();
+  const flipped = new GenericSet<ITile>();
 
   for (const tile of tiles) {
     if (flipped.has(tile)) {
@@ -85,7 +85,7 @@ async function main2() {
   let tiles = await getInitialTiles();
 
   for (let i = 0; i < 100; i++) {
-    const next = new ArraySet<ITile>()
+    const next = new GenericSet<ITile>()
     const candidates = flatten(tiles.toList().map((t) => [t, ...hexNeighbours(t)]));
 
     for (const candidate of candidates) {

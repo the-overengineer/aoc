@@ -1,6 +1,6 @@
 import '@core/polyfill';
 import { Solution } from '@core/DaySolution';
-import { ArraySet } from '@core/ArraySet';
+import { GenericSet } from '@core/GenericSet';
 import { isEqual, pairings, sum } from '@core/utilityBelt';
 
 export interface Point3D {
@@ -94,7 +94,7 @@ const rotators: Array<(p: Point3D) => Point3D> = [
 export function rotations(scanner: Scanner): Scanner[] {
     const scanners: Scanner[] = [];
     const { id, scans } = scanner;
-    const seen = new ArraySet<[number, number, number]>();
+    const seen = new GenericSet<[number, number, number]>();
     const goodSample = scans.find((s) => Math.abs(s.x) !== Math.abs(s.y) && Math.abs(s.x) !== Math.abs(s.z))!;
     
     for (const mx of [-1, 1]) {
@@ -193,7 +193,7 @@ function resolveScannerPositions(scanners: Scanner[]): PositionedScanner[] {
 function part1(input: string) {
     const scanners = getScanners(input);
     const positioned = resolveScannerPositions(scanners);
-    const beacons = new ArraySet<[number, number, number]>();
+    const beacons = new GenericSet<[number, number, number]>();
 
     positioned.forEach((scanner) => {
         scanner.scans.forEach((scan) => {
