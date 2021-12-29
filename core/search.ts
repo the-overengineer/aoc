@@ -2,6 +2,36 @@ import { GenericMap } from './GenericMap';
 import { GenericSet } from './GenericSet';
 import { argmin, isEqual } from './utilityBelt';
 
+type Depth = number
+
+export function bfs<T>(
+    getNeighbours: (member: T) => T[],
+    start: T,
+    isTarget: (it: T) => boolean,
+): [T, Depth] | undefined {
+    const open: [T, Depth][] = [];
+    const visited: GenericSet<T> = new GenericSet();
+
+    visited.add(start);
+    open.push([start, 0]);
+
+    while (open.length > 0) {
+        console.log(open.length);
+        const [vertex, depth] = open.shift()!;
+
+        if (isTarget(vertex)) {
+            return [vertex, depth];
+        }
+
+        getNeighbours(vertex)
+            .filter((n) => !visited.has(n))
+            .forEach((n) => {
+                visited.add(n);
+                open.push([n, depth + 1]);
+            });
+    }
+}
+
 export function dijkstraSearch<T extends any[]>(
     getNeighbours: (member: T) => T[],
     getCost: (member: T) => number,

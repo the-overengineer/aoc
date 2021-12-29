@@ -210,6 +210,27 @@ export function min<T>(items: T[]): T | undefined {
   return biggest;
 }
 
+export function findIndices(haystack: string, needle: string, start: number = 0): number[] {
+  if (haystack.length === 0 || needle.length === 0) {
+    return [];
+  }
+  
+  const idx = haystack.indexOf(needle);
+
+  if (idx === -1) {
+    return [];
+  }
+
+  return [
+    idx + start,
+    ...findIndices(haystack.slice(idx + 1), needle, idx + start + 1),
+  ];
+}
+
+export function replaceAtIndex(str: string, idx: number, original: string, replacement: string): string {
+  return str.substring(0, idx) + replacement + str.substring(idx + original.length);
+}
+
 export function replace<T>(arr: T[], index: number, value: T): T[] {
   return [...arr.slice(0, index), value, ...arr.slice(index + 1)];
 }

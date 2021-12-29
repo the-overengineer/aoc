@@ -1,6 +1,16 @@
 import { GenericMap } from './GenericMap';
 
 export class Counter<T> extends GenericMap<T, number> {
+    public static clone<T>(counter: Counter<T>): Counter<T> {
+        const copy = new Counter<T>();
+
+        counter.entryList().forEach(([k, v]) => {
+            copy.set(k, v);
+        });
+
+        return copy;
+    }
+
     public override get(key: T): number {
         return super.get(key) ?? 0;
     }

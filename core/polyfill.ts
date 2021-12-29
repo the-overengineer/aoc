@@ -24,6 +24,7 @@ String.prototype.reverse = function() {
 interface Array<T> {
   peek(): T;
   toSet(): Set<T>;
+  repeat(times: number): T[];
 }
 
 Array.prototype.toSet = function() {
@@ -32,6 +33,18 @@ Array.prototype.toSet = function() {
 
 Array.prototype.peek = function() {
   return this[this.length - 1];
+};
+
+Array.prototype.repeat = function(times: number) {
+  const arr = [];
+
+  for (let i = 0; i < times; i++) {
+    for (const el of this) {
+      arr.push(el);
+    }
+  }
+
+  return arr;
 };
 
 interface Set<T> {
