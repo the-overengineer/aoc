@@ -32,6 +32,14 @@ export function pipe(...args: any[]): any {
   return (x0: any) => args.reduce((val, fn) => fn(val), x0);
 }
 
+export function fst<T>(xs: [T, any]): T {
+  return xs[0];
+}
+
+export function snd<T>(xs: [any, T]): T {
+  return xs[1];
+}
+
 export function argmin<T, R>(xs: T[], fn: (x: T) => R): T {
   let best = xs[0];
   let bestScore = fn(xs[0]);
