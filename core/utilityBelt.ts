@@ -166,8 +166,8 @@ export function isEqual<T>(a: T, b: T): boolean {
   } else if (Array.isArray(a) && Array.isArray(b)) {
     return a.length === b.length && a.every((x, i) => isEqual(x, b[i]));
   } else if (typeof a === 'object' && typeof b === 'object') {
-    const aKeys = Object.keys(a);
-    const bKeys = Object.keys(b);
+    const aKeys = Object.keys(a as any);
+    const bKeys = Object.keys(b as any);
 
     return isEqual(aKeys, bKeys)
       && aKeys.every((k: any) => {
@@ -341,6 +341,16 @@ export function binaryStringToNumber(bs: BinaryString) {
   }
 
   return num;
+}
+
+export function groupIntoChunks<T>(items: T[], chunkSize: number): T[][] {
+  const collections: T[][] = [];
+
+  for (let start = 0; start < items.length; start += chunkSize) {
+    collections.push(items.slice(start, start + chunkSize));
+  }
+
+  return collections;
 }
 
 export function slidingWindow<T>(items: T[], size: number): T[][] {
