@@ -255,6 +255,10 @@ export function gcd(a: number, b: number): number {
   return gcd(b, a % b);
 }
 
+export function lcm(a: number, b: number): number {
+  return Math.abs(a * b) / gcd(a, b);
+}
+
 export function gcdAll(nums: number[]): number {
   if (nums.length === 1) {
     return nums[0];
@@ -267,6 +271,19 @@ export function gcdAll(nums: number[]): number {
   const [a, b, ...rest] = nums;
 
   return gcdAll([gcd(a, b), ...rest])
+}
+
+export function lcmAll(nums: number[]): number {
+  if (nums.length === 1) {
+    return nums[0];
+  }
+
+  if (nums.length === 2) {
+    return lcm(nums[0], nums[1]);
+  }
+
+  const [a, b, ...rest] = nums;
+  return lcmAll([lcm(a, b), ...rest]);
 }
 
 export function groupBy<T, K extends string>(xs: T[], fn: (x: T) => K): Record<K, T[]> {
