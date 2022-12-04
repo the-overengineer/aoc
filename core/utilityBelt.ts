@@ -210,6 +210,10 @@ export function min<T>(items: T[]): T | undefined {
   return biggest;
 }
 
+export function minmax<T>(items: T[]): [T, T] {
+  return [min(items)!, max(items)!];
+}
+
 export function findIndices(haystack: string, needle: string, start: number = 0): number[] {
   if (haystack.length === 0 || needle.length === 0) {
     return [];
@@ -485,4 +489,8 @@ export function constrainUniqueValues<K, V>(map: Map<K, Set<V>>): Map<K, Set<V>>
   }
 
   return result;
+}
+
+export function delay(timeoutMs: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, timeoutMs));
 }

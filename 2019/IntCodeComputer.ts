@@ -58,6 +58,10 @@ export class IntCodeComputer {
 
     private constructor(public readonly memory: Memory) {}
 
+    public get halted() {
+        return this.state === MachineState.Halted;
+    }
+
     private getArgs(count: number): number[] {
         return range(1, count + 1).map((offset) => this.readAt(this.currentPosition + offset));
     }
