@@ -13,6 +13,12 @@ export class Vector<T extends number[]> {
         return this.data[i];
     }
 
+    public timesScalar(scalar: number): Vector<T> {
+        return this.construct(
+            this.data.map((x, i) => x * scalar) as T,
+        );
+    }
+
     public add(other: Vector<T>): Vector<T> {
         return this.construct(
             this.data.map((x, i) => x + other.at(i)) as T,

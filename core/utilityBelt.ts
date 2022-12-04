@@ -306,6 +306,16 @@ export function repeat<T>(x: T, times: number): T[] {
   return repeated;
 }
 
+export function generateRepeat<T>(getX: () => T, times: number): T[] {
+  const repeated: T[] = [];
+
+  for (let i = 0; i < times; i++) {
+    repeated.push(getX());
+  }
+
+  return repeated;
+}
+
 export function permutations<T>(inputArr: T[]): T[][] {
   let result: T[][] = [];
 
