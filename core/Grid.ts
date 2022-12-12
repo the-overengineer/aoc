@@ -87,6 +87,21 @@ export class Grid<T> {
         return indices;
     }
 
+    public findIndex(fn: GridCallback<T, boolean>): [number, number] | null {
+        let idx: [number, number] | null = null;
+        this.forEach((cell, y, x, data) => {
+            if (idx != null) {
+                return;
+            }
+
+            if (fn(cell, y, x, data)) {
+                idx = [y, x];
+            }
+        });
+
+        return idx;
+    }
+
     public filter(fn: GridCallback<T, boolean>): T[] {
         const matches: T[] = [];
 

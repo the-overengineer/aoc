@@ -16,7 +16,6 @@ export function bfs<T>(
     open.push([start, 0]);
 
     while (open.length > 0) {
-        console.log(open.length);
         const [vertex, depth] = open.shift()!;
 
         if (isTarget(vertex)) {
