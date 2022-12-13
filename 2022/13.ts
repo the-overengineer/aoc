@@ -5,16 +5,16 @@ type Signal = number | Signal[];
 type Packet = Signal[];
 type PacketPair = [Packet, Packet];
 const Ordering = {
-    Correct: 'Correct',
-    Incorrect: 'Incorrect',
-    Unknown: 'Unknown',
+    Correct: -1,
+    Incorrect: 1,
+    Unknown: 0,
 } as const;
 type Ordering = typeof Ordering[keyof typeof Ordering];
 
 function part1(input: string): number {
     const pairs = parse(input);
     const enumerated = enumerate(pairs);
-    const ordered = enumerated.filter(([x]) => getPacketSorting(...x) === Ordering.Correct);
+    const ordered = enumerated.filter(([x]) => getPacketOrdering(...x) === Ordering.Correct);
     const orderedIndices = ordered.map(snd).map(_ => _ + 1);
     return sum(orderedIndices);
 }
@@ -23,23 +23,14 @@ function part2(input: string): number {
     const divider1 = [[2]];
     const divider2 = [[6]];
     const pairs: Packet[] = [...flatten(parse(input)), divider1, divider2];
-    const sorted = pairs.sort((a, b) => {
-        const sorting = getPacketSorting(a, b);
-        if (sorting == Ordering.Correct) {
-            return -1;
-        } else if (sorting === Ordering.Incorrect) {
-            return 1;
-        } else {
-            return 0;
-        }
-    });
+    const sorted = pairs.sort((a, b) => getPacketOrdering(a, b));
     const dividerIndex1 = 1 + sorted.findIndex(_ => isEqual(_, divider1));
     const dividerIndex2 = 1 + sorted.findIndex(_ => isEqual(_, divider2));
 
     return dividerIndex1 * dividerIndex2;
 }
 
-function getPacketSorting(a: Packet, b: Packet): Ordering {
+function getPacketOrdering(a: Packet, b: Packet): Ordering {
     const len = Math.max(a.length, b.length);
 
     for (let i = 0; i < len; i++) {
@@ -53,7 +44,7 @@ function getPacketSorting(a: Packet, b: Packet): Ordering {
         const vb = b[i];
 
         if (Array.isArray(va) && Array.isArray(vb)) {
-            const subordering = getPacketSorting(va, vb);
+            const subordering = getPacketOrdering(va, vb);
             if (subordering !== Ordering.Unknown) {
                 return subordering;
             }
@@ -64,12 +55,12 @@ function getPacketSorting(a: Packet, b: Packet): Ordering {
                 return Ordering.Incorrect;
             }
         } else if (typeof va === 'number' && Array.isArray(vb)) {
-            const subordering = getPacketSorting([va], vb);
+            const subordering = getPacketOrdering([va], vb);
             if (subordering !== Ordering.Unknown) {
                 return subordering;
             }
         } else if (Array.isArray(va) && typeof vb === 'number') {
-            const subordering = getPacketSorting(va, [vb]);
+            const subordering = getPacketOrdering(va, [vb]);
             if (subordering !== Ordering.Unknown) {
                 return subordering;
             }
