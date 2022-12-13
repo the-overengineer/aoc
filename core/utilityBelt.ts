@@ -95,6 +95,10 @@ export function zip<T, U>(xs: T[], ys: U[]): [T, U][] {
   return acc;
 }
 
+export function enumerate<T>(xs: T[]): [T, number][] {
+  return xs.map((x, idx) => [x, idx]);
+}
+
 export function flatten<T>(arr: T[][]): T[] {
   return arr.reduce((acc, a) => [...acc, ...a], []);
 }
