@@ -498,3 +498,7 @@ export function constrainUniqueValues<K, V>(map: Map<K, Set<V>>): Map<K, Set<V>>
 export function delay(timeoutMs: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, timeoutMs));
 }
+
+export function isNumber(text: string): boolean {
+  return /^\d+$/.test(text);
+}
